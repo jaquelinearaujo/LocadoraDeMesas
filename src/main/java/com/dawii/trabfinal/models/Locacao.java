@@ -19,11 +19,10 @@ public class Locacao implements Serializable {
     @SequenceGenerator(name="gerador", sequenceName="locacao_codigo_seq", allocationSize=1)
     @GeneratedValue(generator="gerador", strategy= GenerationType.SEQUENCE)
     private Long codigo;
-    @JoinColumn(name = "cod_pessoa", referencedColumnName = "codigo")
-    @ManyToOne(targetEntity = Pessoa.class)
+
+    @Column(name = "cod_pessoa")
     private Long codPessoa;
-    @JoinColumn(name = "cod_mesa", referencedColumnName = "codigo")
-    @ManyToOne(targetEntity = Mesa.class)
+    @Column(name = "cod_mesa")
     private Long codMesa;
     @Column(name = "dt_inicio_locacao")
     private String dtInicioLocacao;
@@ -32,3 +31,5 @@ public class Locacao implements Serializable {
     @Column(name = "val_total")
     private Double valTotal;
 }
+
+

@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "mesa")
+@Table(name = "templates/mesa")
 public class Mesa implements Serializable {
     private static final long serialVersionUID = -5873580871502135134L;
 

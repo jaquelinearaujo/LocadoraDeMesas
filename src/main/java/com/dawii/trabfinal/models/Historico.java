@@ -19,8 +19,7 @@ public class Historico implements Serializable {
     @SequenceGenerator(name="gerador", sequenceName="historico_codigo_seq", allocationSize=1)
     @GeneratedValue(generator="gerador", strategy= GenerationType.SEQUENCE)
     private Long codigo;
-    @ManyToOne(targetEntity = Locacao.class)
-    @JoinColumn(name = "cod_locacao")
+    @Column(name = "cod_locacao")
     private Long codLocacao;
     private String data;
 }

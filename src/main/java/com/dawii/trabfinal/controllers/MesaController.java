@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/mesa")
+@RequestMapping("/api/mesa/")
 @AllArgsConstructor
 @Data
 public class MesaController {

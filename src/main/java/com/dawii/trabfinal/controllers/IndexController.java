@@ -21,5 +21,12 @@ public class IndexController {
 		logger.trace("Encaminhando para a view index");
 		return mv;
 	}
+
+	@GetMapping("/mostrarmensagem")
+	public String mostrarMensagem() {
+		logger.trace("Entrou em mostrarMensagem");
+		logger.trace("Encaminhando para a view mostrarmensagem");
+		return "mostrarmensagem";
+	}
 	
 }
