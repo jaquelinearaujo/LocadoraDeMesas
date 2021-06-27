@@ -1,32 +1,30 @@
 package com.dawii.trabfinal.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.dawii.trabfinal.models.response.ProdutoResponse;
+import com.dawii.trabfinal.services.IProdutoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class IndexController {
+	private final IProdutoService service;
 
-	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+	public IndexController(IProdutoService service) {
+		this.service = service;
+	}
 
 	@GetMapping(value = {"/", "/index.html"} )
 	public ModelAndView index() {
-		logger.trace("Entrou em index");
 		ModelAndView mv = new ModelAndView("index");
-		//Se voce precisar pode inserir outros objetos no model para que sejam usados
-		// na view index.html
-		//mv.addObject("nome", valor);
-		logger.trace("Encaminhando para a view index");
+		ProdutoResponse response = service.buscarTodos();
+		mv.addObject("produtos", response.getProdutos());
 		return mv;
 	}
 
-	@GetMapping("/mostrarmensagem")
-	public String mostrarMensagem() {
-		logger.trace("Entrou em mostrarMensagem");
-		logger.trace("Encaminhando para a view mostrarmensagem");
-		return "mostrarmensagem";
+	@GetMapping(value = {"/login", "/login.html"} )
+	public ModelAndView login() {
+		ModelAndView mv = new ModelAndView("login");
+		return mv;
 	}
-	
 }

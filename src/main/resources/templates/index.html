@@ -6,12 +6,32 @@
 	<title>Página Principal</title>
 </head>
 <body>
-<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-	<div class="container">
-		<h1>Locadora de Mesas</h1>
+<div layout:fragment="conteudo" class="container" id="conteudo">
+	<h1>Locadora de Produtos</h1>
+	<div class="alert alert-success" role="alert" th:if="${mensagem}">
+		<span th:text="${mensagem}"></span>
 	</div>
+	<fieldset style="border: 3px solid black; padding: 10px">
+		<legend style="width: auto">Produtos:</legend>
+		<table class="table table-striped table-hover">
+			<thead>
+			<th>Código</th>
+			<th>Nome</th>
+			<th>Descrição</th>
+			<th>Preço</th>
+			<th>Quantidade em estoque</th>
+			</thead>
+			<tbody th:each="produto : ${produtos}">
+			<tr>
+				<td th:text="${produto.codigo}"></td>
+				<td th:text="${produto.nome}"></td>
+				<td th:text="${produto.descricao}"></td>
+				<td th:text="${produto.preco}"></td>
+				<td th:text="${produto.estoque}"></td>
+			</tr>
+			</tbody>
+		</table>
+	</fieldset>
 </div>
-</body>
-</html>
 </body>
 </html>

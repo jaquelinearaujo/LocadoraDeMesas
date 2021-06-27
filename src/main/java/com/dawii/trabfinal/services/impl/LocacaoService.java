@@ -1,19 +1,16 @@
 package com.dawii.trabfinal.services.impl;
 
 import com.dawii.trabfinal.models.Locacao;
-import com.dawii.trabfinal.models.Mesa;
 import com.dawii.trabfinal.models.Pessoa;
+import com.dawii.trabfinal.models.Produto;
 import com.dawii.trabfinal.models.Status;
-import com.dawii.trabfinal.models.request.LocacaoRequest;
-import com.dawii.trabfinal.models.request.MesaRequest;
-import com.dawii.trabfinal.models.request.PessoaRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
-import com.dawii.trabfinal.models.response.MesaResponse;
 import com.dawii.trabfinal.models.response.PessoaResponse;
+import com.dawii.trabfinal.models.response.ProdutoResponse;
 import com.dawii.trabfinal.repositories.ILocacaoRepository;
 import com.dawii.trabfinal.services.ILocacaoService;
-import com.dawii.trabfinal.services.IMesaService;
 import com.dawii.trabfinal.services.IPessoaService;
+import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -30,31 +27,31 @@ import java.util.stream.Collectors;
 public class LocacaoService implements ILocacaoService, Serializable {
 
     private final ILocacaoRepository repository;
-    private final IMesaService mesaService;
+    private final IProdutoService ProdutoService;
     private final IPessoaService pessoaService;
 
     @Override
-    public LocacaoResponse insertLocacao(LocacaoRequest request) {
+    public LocacaoResponse insertLocacao(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null
-                || request.getLocacao().getDtInicioLocacao() == null
-                || request.getLocacao().getDtFimLocacao() == null
-                || request.getLocacao().getCodMesa() == null
-                || request.getLocacao().getCodPessoa() == null
-                || request.getLocacao().getValTotal() == null){
+        if (request == null
+                || request.getDtInicioLocacao() == null
+                || request.getDtFimLocacao() == null
+                || request.getCodProduto() == null
+                || request.getCodPessoa() == null
+                || request.getValTotal() == null){
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para Locacao estão presentes");
             return response;
         }
-        MesaResponse mesaResponse = buscarMesaResponse(request);
+        ProdutoResponse produtoResponse = buscarProdutoResponse(request);
 
-        if (mesaResponse.getMesas() == null || mesaResponse.getMesas().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a mesa do locacao exista");
-            response.getMessages().addAll(mesaResponse.getMessages());
+        if (produtoResponse.getProdutos() == null || produtoResponse.getProdutos().isEmpty()){
+            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto do locacao exista");
+            response.getMessages().addAll(produtoResponse.getMessages());
             return response;
         }
 
-        Locacao locacao = getRepository().save(request.getLocacao());
+        Locacao locacao = getRepository().save(request);
         response.setLocacoes(Arrays.asList(locacao));
         return response;
     }
@@ -74,15 +71,15 @@ public class LocacaoService implements ILocacaoService, Serializable {
     }
 
     @Override
-    public LocacaoResponse buscarLocacaoPorId(LocacaoRequest request) {
+    public LocacaoResponse buscarLocacaoPorId(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null || request.getLocacao().getCodigo() == null ){
+        if (request == null || request.getCodigo() == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para Locacao estão presentes");
             return response;
         }
 
-        Optional<Locacao> locacaoOptional = getRepository().findById(request.getLocacao().getCodigo());
+        Optional<Locacao> locacaoOptional = getRepository().findById(request.getCodigo());
         if (!locacaoOptional.isPresent()){
             applyErrorMessage(Status.FAIL,response,"Locacao requisitada não existe");
             return response;
@@ -93,22 +90,22 @@ public class LocacaoService implements ILocacaoService, Serializable {
     }
 
     @Override
-    public LocacaoResponse buscarMesaPorId(LocacaoRequest request) {
+    public LocacaoResponse buscarProdutoPorId(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null || request.getLocacao().getCodMesa() == null ){
+        if (request == null || request.getCodProduto() == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
             return response;
-        }
-        MesaResponse marcaResponse = buscarMesaResponse(request);
+        }/*
+        ProdutoResponse marcaResponse = buscarProdutoResponse(request);
 
-        if (marcaResponse.getMesas() == null || marcaResponse.getMesas().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a mesa da lcoacao existe");
+        if (marcaResponse.getProdutos() == null || marcaResponse.getProdutos().isEmpty()){
+            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto da lcoacao existe");
             response.getMessages().addAll(marcaResponse.getMessages());
             return response;
-        }
+        }*/
 
-        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodMesa(request.getLocacao().getCodMesa());
+        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodProduto(request.getCodProduto());
         if (locacaoOptionalList == null || locacaoOptionalList.isEmpty()){
             applyErrorMessage(Status.FAIL,response,"Patrimonios requisitados não existem");
             return response;
@@ -117,24 +114,24 @@ public class LocacaoService implements ILocacaoService, Serializable {
         response.setLocacoes(locacaoOptionalList.stream().map(p -> p.get()).collect(Collectors.toList()));
         return response;
     }
-
+/*
     @Override
-    public LocacaoResponse buscarPessoaPorId(LocacaoRequest request) {
+    public LocacaoResponse buscarPessoaPorId(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null || request.getLocacao().getCodMesa() == null ){
+        if (request == null || request.getCodProduto() == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
             return response;
         }
         PessoaResponse pessoaResponse = buscarPessoaResponse(request);
 
-        if (pessoaResponse.getPessoas() == null || pessoaResponse.getPessoas().isEmpty()){
+        if (pessoaResponse == null){
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a pessoa da locacao existe");
             response.getMessages().addAll(pessoaResponse.getMessages());
             return response;
         }
 
-        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodMesa(request.getLocacao().getCodMesa());
+        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodProduto(request.getCodProduto());
         if (locacaoOptionalList == null || locacaoOptionalList.isEmpty()){
             applyErrorMessage(Status.FAIL,response,"Locacoes requisitadas não existem");
             return response;
@@ -142,13 +139,13 @@ public class LocacaoService implements ILocacaoService, Serializable {
 
         response.setLocacoes(locacaoOptionalList.stream().map(p -> p.get()).collect(Collectors.toList()));
         return response;
-    }
+    }*/
 
     @Override
-    public LocacaoResponse apagarLocacao(LocacaoRequest request) {
+    public LocacaoResponse apagarLocacao(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null || request.getLocacao().getCodigo() == null ){
+        if (request == null || request.getCodigo() == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos de Locacao para ser removida estão presentes");
             return response;
         }
@@ -159,7 +156,7 @@ public class LocacaoService implements ILocacaoService, Serializable {
             return response;
         }
 
-        getRepository().deleteById(request.getLocacao().getCodigo());
+        getRepository().deleteById(request.getCodigo());
         response.setLocacoes(Arrays.asList(response.getLocacoes().get(0)));
         applyErrorMessage(Status.SUCCESS,response,"Locacao removida");
 
@@ -167,16 +164,16 @@ public class LocacaoService implements ILocacaoService, Serializable {
     }
 
     @Override
-    public LocacaoResponse editarLocacao(LocacaoRequest request) {
+    public LocacaoResponse editarLocacao(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request.getLocacao() == null
-                || request.getLocacao().getCodigo() == null
-                || request.getLocacao().getCodMesa() == null
-                || request.getLocacao().getCodPessoa() == null
-                || request.getLocacao().getDtInicioLocacao() == null
-                || request.getLocacao().getDtInicioLocacao() == null
-                || request.getLocacao().getValTotal() == null){
+        if (request == null
+                || request.getCodigo() == null
+                || request.getCodProduto() == null
+                || request.getCodPessoa() == null
+                || request.getDtInicioLocacao() == null
+                || request.getDtInicioLocacao() == null
+                || request.getValTotal() == null){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos de Locacao para ser editada estão presentes");
             return response;
         }
@@ -187,15 +184,15 @@ public class LocacaoService implements ILocacaoService, Serializable {
             return response;
         }
 
-        MesaResponse mesaResponse = buscarMesaResponse(request);
+        ProdutoResponse produtoResponse = buscarProdutoResponse(request);
 
-        if (mesaResponse.getMesas() == null || mesaResponse.getMesas().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a mesa da Locacao existe");
-            response.getMessages().addAll(mesaResponse.getMessages());
+        if (produtoResponse.getProdutos() == null || produtoResponse.getProdutos().isEmpty()){
+            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto da Locacao existe");
+            response.getMessages().addAll(produtoResponse.getMessages());
             return response;
         }
 
-        response.setLocacoes(Arrays.asList(getRepository().save(request.getLocacao())));
+        response.setLocacoes(Arrays.asList(getRepository().save(request)));
 
         return response;
     }
@@ -205,21 +202,18 @@ public class LocacaoService implements ILocacaoService, Serializable {
         response.getMessages().add(message);
     }
 
-    private MesaResponse buscarMesaResponse(LocacaoRequest request) {
-        Mesa mesa = new Mesa();
-        mesa.setCodigo(request.getLocacao().getCodMesa());
-        MesaRequest mesaRequest = new MesaRequest();
-        mesaRequest.setMesa(mesa);
-        MesaResponse mesaResponse = getMesaService().buscarMesaPorId(mesaRequest);
-        return mesaResponse;
+    private ProdutoResponse buscarProdutoResponse(Locacao request) {
+        Produto produto = new Produto();
+        produto.setCodigo(request.getCodProduto());
+        Produto produtoRequest = new Produto();
+        ProdutoResponse produtoResponse = getProdutoService().buscarProdutoPorId(produtoRequest);
+        return produtoResponse;
     }
 
-    private PessoaResponse buscarPessoaResponse(LocacaoRequest request) {
+    private PessoaResponse buscarPessoaResponse(Locacao request) {
         Pessoa pessoa = new Pessoa();
-        pessoa.setCodigo(request.getLocacao().getCodMesa());
-        PessoaRequest pessoaRequest = new PessoaRequest();
-        pessoaRequest.setPessoa(pessoa);
-        PessoaResponse pessoaResponse = getPessoaService().buscarPessoaPorId(pessoaRequest);
+        pessoa.setCodigo(request.getCodPessoa());
+        PessoaResponse pessoaResponse = getPessoaService().buscarPessoaPorId(pessoa);
         return pessoaResponse;
     }
 }

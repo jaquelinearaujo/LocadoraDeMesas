@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.thymeleaf.org">
+<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org">
 <head>
-<title>Resultado da Pesquisa</title>
+	<title>Resultado da Pesquisa</title>
 </head>
 <body>
-	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-		<div th:replace="~{layout/fragments/menuslaterais :: menulateral}"></div>
-		<div class="container">
-			<h1 class="mb-5 mt-5">Novo Fabricante</h1>
-
-			<div id="formulario">
-				<form action="#!" id="forminserir" th:object="${fabricante}" method="post" class="col-2 needs-validation" th:fragment="formulario">
-					<input type="hidden" id="url" th:value="@{/fabricante/novo}">
-					<div class="row mb-3 has-validation">
-						<label for="nome" class="form-label">Nome:</label>
-						<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid">
-						<span class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:each="erro : ${#fields.errors('nome')}" th:text="${erro} + '. '">Erro no nome</span>
-					</div>
-					<input type="button" id="botaoinserir" class="btn btn-primary mt-2" value="Inserir">
-				</form>
+<div layout:include="Mensagem"></div>
+<div layout:fragment="conteudo" class="container" id="conteudo">
+	<fieldset style="border: 3px solid black; padding: 10px">
+		<legend style="width: auto">Novo Usuário:</legend>
+		<form action="#" th:action="@{/api/usuario/cadastrar}" th:object="${usuario}" method="post" class="col-10 needs-validation" th:fragment="formulario">
+			<div class="row mb-3 has-validation">
+				<label for="nome" class="form-label">Nome:</label>
+				<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" id="nome">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:each="erro : ${#fields.errors('nome')}" th:text="${erro} + '. '">Erro no nome</span>
 			</div>
-
-		</div>
-
-		<div layout:fragment="scripts">
-			<script th:src="@{/js/inserirfabricante.js}"></script>
-		</div>
-
-	</div>
+			<div class="row mb-3 has-validation">
+				<label for="email" class="form-label">Email:</label>
+				<input type="text" class="form-control" th:field="*{email}" th:errorclass="is-invalid" id="email">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:each="erro : ${#fields.errors('email')}" th:text="${erro} + '. '">Erro no email</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="senha" class="form-label">Senha:</label>
+				<input type="password" class="form-control" th:field="*{senha}" th:errorclass="is-invalid" id="senha">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:each="erro : ${#fields.errors('senha')}" th:text="${erro} + '. '">Erro no preço unitário</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="telContato" class="form-label">Telefone de contato:</label>
+				<input type="text" class="form-control" th:field="*{telContato}" th:errorclass="is-invalid" id="telContato">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('telContato')}" th:each="erro : ${#fields.errors('telContato')}" th:text="${erro} + '. '">Erro no telContato</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="endereco" class="form-label">Endereço:</label>
+				<input type="text" class="form-control" th:field="*{endereco}" th:errorclass="is-invalid" id="endereco">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('endereco')}" th:each="erro : ${#fields.errors('endereco')}" th:text="${erro} + '. '">Erro no endereço</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="role" class="form-label">Role:</label>
+				<input type="text" class="form-control" th:field="*{role}" th:errorclass="is-invalid" id="role">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:each="erro : ${#fields.errors('role')}" th:text="${erro} + '. '">Erro no role</span>
+			</div>
+			<button type="submit" class="btn btn-primary mt-2">Save</button>
+		</form>
+	</fieldset>
+</div>
 </body>
 </html>

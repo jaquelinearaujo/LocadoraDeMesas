@@ -11,6 +11,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -20,8 +21,36 @@ public class PessoaService implements IPessoaService {
     private final IPessoaRepository repository;
 
     @Override
-    public PessoaResponse cadastrarUsuario(PessoaRequest request) {
-        return null;
+    public PessoaResponse cadastrarUsuario(Pessoa request) {
+        PessoaResponse response = new PessoaResponse();
+
+        if (request == null
+                || request.getEmail() == null
+                || request.getNome() == null
+                || request.getSenha() == null
+                || request.getRole() == null
+                || request.getTelContato() == null
+                || request.getEndereco() == null) {
+            applyErrorMessage(Status.VALIDATION_ERROR,response,"Verifique os dados do usuário a ser cadastrado");
+            return response;
+        } else {
+            request.setNome(request.getNome().trim());
+            request.setSenha((request.getSenha()));//TODO codificar senha
+
+            if (getRepository().findByEmail(request.getEmail()).isPresent()){
+                applyErrorMessage(Status.FAIL,response,"Email já cadastrado");
+                return response;
+            }
+
+            try{
+                getRepository().save(request);
+                response.getMessages().add("Usuario cadastrado com sucesso");
+                response.setPessoas(Arrays.asList(request));
+            } catch (Exception e){
+                applyErrorMessage(Status.VALIDATION_ERROR,response,"Usuario nao cadastrado");
+            }
+        }
+        return response;
     }
 
     @Override
@@ -30,15 +59,29 @@ public class PessoaService implements IPessoaService {
     }
 
     @Override
-    public PessoaResponse buscarPessoaPorId(PessoaRequest request) {
+    public PessoaResponse buscarTodos() {
+        PessoaResponse response = new PessoaResponse();
+        List<Pessoa> pessoas = getRepository().findAll();
+
+        if (pessoas == null || pessoas.isEmpty()){
+            response.getMessages().add("Não existem pessoas cadastradas");
+            return response;
+        }
+        response.setPessoas(pessoas);
+
+        return response;
+    }
+
+    @Override
+    public PessoaResponse buscarPessoaPorId(Pessoa request) {
         PessoaResponse response = new PessoaResponse();
 
-        if (request.getPessoa() == null || request.getPessoa().getCodigo() == null ){
+        if (request == null || request.getCodigo() == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para mesa estão presentes");
             return response;
         }
 
-        Optional<Pessoa> pessoaOptional = getRepository().findById(request.getPessoa().getCodigo());
+        Optional<Pessoa> pessoaOptional = getRepository().findById(request.getCodigo());
         if (!pessoaOptional.isPresent()){
             applyErrorMessage(Status.FAIL,response,"Mesa requisitada não existe");
             return response;

@@ -1,32 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.thymeleaf.org">
+<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org">
 <head>
-<title>Resultado da Pesquisa</title>
+	<title>Resultado da Pesquisa</title>
 </head>
 <body>
-	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-		<div th:replace="~{layout/fragments/menuslaterais :: menulateral}"></div>
-		<div class="container">
-			<h1 class="mb-5 mt-5">Novo Fabricante</h1>
-
-			<div id="formulario">
-				<form action="#!" id="forminserir" th:object="${fabricante}" method="post" class="col-2 needs-validation" th:fragment="formulario">
-					<input type="hidden" id="url" th:value="@{/fabricante/novo}">
-					<div class="row mb-3 has-validation">
-						<label for="nome" class="form-label">Nome:</label>
-						<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid">
-						<span class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:each="erro : ${#fields.errors('nome')}" th:text="${erro} + '. '">Erro no nome</span>
-					</div>
-					<input type="button" id="botaoinserir" class="btn btn-primary mt-2" value="Inserir">
-				</form>
+<div layout:include="Mensagem"></div>
+<div layout:fragment="conteudo" class="container" id="conteudo">
+	<fieldset style="border: 3px solid black; padding: 10px">
+		<legend style="width: auto">Nova Locação:</legend>
+		<form action="#" th:action="@{/api/locacao/cadastrar}" th:object="${locacao}" method="post" class="col-10 needs-validation" th:fragment="formulario">
+			<div class="row mb-3 has-validation">
+				<label for="nome" class="form-label">Nome:</label>
+				<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" id="nome">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:each="erro : ${#fields.errors('nome')}" th:text="${erro} + '. '">Erro no nome</span>
 			</div>
-
-		</div>
-
-		<div layout:fragment="scripts">
-			<script th:src="@{/js/inserirfabricante.js}"></script>
-		</div>
-
-	</div>
+			<div class="row mb-3 has-validation">
+				<label for="descricao" class="form-label">Descrição:</label>
+				<input type="text" class="form-control" th:field="*{descricao}" th:errorclass="is-invalid" id="descricao">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('descricao')}" th:each="erro : ${#fields.errors('descricao')}" th:text="${erro} + '. '">Erro na descrição</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="preco" class="form-label">Preço unitário:</label>
+				<input type="text" class="form-control" th:field="*{preco}" th:errorclass="is-invalid" id="preco">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('preco')}" th:each="erro : ${#fields.errors('preco')}" th:text="${erro} + '. '">Erro no preço unitário</span>
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="estoque" class="form-label">Quantidade em estoque:</label>
+				<input type="text" class="form-control" th:field="*{estoque}" th:errorclass="is-invalid" id="estoque">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('estoque')}" th:each="erro : ${#fields.errors('estoque')}" th:text="${erro} + '. '">Erro no estoque</span>
+			</div>
+			<button type="submit" class="btn btn-primary mt-2">Save</button>
+		</form>
+	</fieldset>
+</div>
 </body>
 </html>

@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "locacao")
 public class Locacao implements Serializable {
-    private static final long serialVersionUID = -5873580871502135134L;
+    private static final long serialVersionUID = -7873580871502135134L;
 
     @Id
     @SequenceGenerator(name="gerador", sequenceName="locacao_codigo_seq", allocationSize=1)
@@ -22,8 +22,8 @@ public class Locacao implements Serializable {
 
     @Column(name = "cod_pessoa")
     private Long codPessoa;
-    @Column(name = "cod_mesa")
-    private Long codMesa;
+    @Column(name = "cod_produto")
+    private Long codProduto;
     @Column(name = "dt_inicio_locacao")
     private String dtInicioLocacao;
     @Column(name = "dt_fim_locacao")

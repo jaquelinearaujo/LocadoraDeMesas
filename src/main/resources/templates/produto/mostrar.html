@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.thymeleaf.org">
+<head>
+<title>Resultado da Pesquisa</title>
+</head>
+<body>
+	<div layout:fragment="conteudo"  class="container" id="conteudo">
+		<fieldset style="border: 3px solid black; padding: 10px">
+			<legend style="width: auto">Produto:</legend>
+			<form action="#" th:action="@{/api/produto/alterar}" th:object="${produto}" method="post" class="col-10">
+				<input type="hidden" th:field="*{codigo}">
+				<div class="row mb-3 has-validation">
+					<label for="nome" class="form-label">Nome:</label>
+					<input type="text" class="form-control" th:field="*{nome}" placeholder="nome" id="nome">
+				</div>
+				<div class="row mb-3 has-validation">
+					<label for="descricao" class="form-label">Descrição:</label>
+					<input type="text" class="form-control" th:field="*{descricao}" placeholder="descricao" id="descricao">
+				</div>
+				<div class="row mb-3 has-validation">
+					<label for="preco" class="form-label">Preço unitário:</label>
+					<input type="text" class="form-control" th:field="*{preco}" placeholder="preco" id="preco">
+				</div>
+				<div class="row mb-3 has-validation">
+					<label for="estoque" class="form-label">Quantidade em estoque:</label>
+					<input type="number" class="form-control" th:field="*{estoque}" placeholder="estoque" id="estoque">
+				</div>
+				<button type="submit" class="btn btn-primary mt-2">Save</button>
+			</form>
+		</fieldset>
+		<a th:href="@{/}" class="btn btn-dark mt-2">Voltar</a>
+	</div>
+</body>
+</html>

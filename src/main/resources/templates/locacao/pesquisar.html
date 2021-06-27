@@ -7,7 +7,6 @@
 </head>
 <body>
 	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-	<div th:replace="~{layout/fragments/menuslaterais :: menulateral}"></div>
 	<div class="container">
 		<h1 class="mb-5 mt-3">Pesquisar Fabricantes</h1>
 			<form action="#!" th:action="@{/fabricante/pesquisar}" th:object="${fabricanteFilter}" method="get" class="col-2">

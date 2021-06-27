@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.thymeleaf.org">
+<head>
+	<title>Pesquisa de Fabricantes</title>
+</head>
+<body>
+	<div layout:fragment="conteudo" class="container" id="conteudo">
+		<div class="alert alert-danger" role="alert" th:if="${mensagem}">
+			<span th:text="${mensagem}"></span>
+		</div>
+		<fieldset style="border: 3px solid black; padding: 10px">
+			<legend style="width: auto">Pesquisar Produto:</legend>
+			<form action="#" th:action="@{/api/produto/pesquisar}" th:object="${produtoFilter}" method="post" class="col-2">
+				<div class="row mb-3">
+					<label for="codigo" class="form-label">Código</label>
+					<input type="number" class="form-control" th:field="*{codigo}" id="codigo">
+				</div>
+				<div class="row mb-3">
+					<label for="nome">Nome</label>
+					<input type="text" class="form-control" th:field="*{nome}" id="nome">
+				</div>
+				<button type="submit" class="btn btn-primary mt-2">Pesquisar</button>
+			</form>
+		</fieldset>
+	</div>
+</body>
+</html>
