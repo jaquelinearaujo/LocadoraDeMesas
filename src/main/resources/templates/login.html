@@ -32,22 +32,22 @@
 <div class="limiter" layout:fragment="conteudo">
     <div class="container-login100">
         <div class="wrap-login100">
-            <form class="login100-form validate-form" method="post" th:action="@{/api/usuario/entrar}">
+            <p th:if="${param.error}" style="color:white; text-align:center; justify-content:center;">Usuário ou senha inválidos</p>
+            <p th:if="${param.logout}" style="color:white; text-align:center; justify-content:center;">Você foi deslogado</p>
+            <form class="login100-form validate-form" method="post" th:action="@{/login}">
 					<span class="login100-form-logo">
 						<img th:src="@{/images/logo.png}" alt="" style="width: 128px">
 					</span>
 
-                <span class="login100-form-title p-b-34 p-t-27">
-						Log in
-					</span>
+                <span class="login100-form-title p-b-34 p-t-27">Log in</span>
 
                 <div class="wrap-input100 validate-input" data-validate = "Entre com o email">
-                    <input class="input100" type="text" name="nome" placeholder="Email">
+                    <input class="input100" type="text" id="username" name="username" placeholder="Username" autofocus="autofocus">
                     <span class="focus-input100" data-placeholder="&#xf207;"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Entre com a senha">
-                    <input class="input100" type="password" name="senha" placeholder="Senha">
+                    <input class="input100" type="password" id="password" name="password" placeholder="Senha">
                     <span class="focus-input100" data-placeholder="&#xf191;"></span>
                 </div>
 
