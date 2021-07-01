@@ -27,19 +27,13 @@
 				<span class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:each="erro : ${#fields.errors('senha')}" th:text="${erro} + '. '">Erro no preço unitário</span>
 			</div>
 			<div class="row mb-3 has-validation">
-				<label for="telContato" class="form-label">Telefone de contato:</label>
-				<input type="text" class="form-control" th:field="*{telContato}" th:errorclass="is-invalid" id="telContato">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('telContato')}" th:each="erro : ${#fields.errors('telContato')}" th:text="${erro} + '. '">Erro no telContato</span>
+				<label for="usuario" class="form-label">Usuário para login:</label>
+				<input type="text" class="form-control" th:field="*{usuario}" th:errorclass="is-invalid" id="usuario">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('usuario')}" th:each="erro : ${#fields.errors('usuario')}" th:text="${erro} + '. '">Erro no usuario</span>
 			</div>
-			<div class="row mb-3 has-validation">
-				<label for="endereco" class="form-label">Endereço:</label>
-				<input type="text" class="form-control" th:field="*{endereco}" th:errorclass="is-invalid" id="endereco">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('endereco')}" th:each="erro : ${#fields.errors('endereco')}" th:text="${erro} + '. '">Erro no endereço</span>
-			</div>
-			<div class="row mb-3 has-validation">
-				<label for="role" class="form-label">Role:</label>
-				<input type="text" class="form-control" th:field="*{role}" th:errorclass="is-invalid" id="role">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:each="erro : ${#fields.errors('role')}" th:text="${erro} + '. '">Erro no role</span>
+			<div class="row mb-3 has-validation" th:each="papel: ${todosPapeis}">
+				<input type="checkbox" class="form-control" th:field="*{papeis}" th:value="${papel.codigo}" th:errorclass="is-invalid">
+				<label th:for="${#ids.prev('papeis')}" class="form-label" th:text="${papel.nome}">Role:</label>
 			</div>
 			<button type="submit" class="btn btn-primary mt-2">Save</button>
 		</form>

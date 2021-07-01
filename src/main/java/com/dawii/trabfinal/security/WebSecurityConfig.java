@@ -25,14 +25,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/vendor/**","/fonts/**","/css/**", "/images/**", "/js/**","/","/api/locacao/abririnserir").permitAll()
+                .antMatchers("/vendor/**","/fonts/**","/css/**", "/images/**", "/js/**","/").permitAll()
                 .antMatchers("/api/usuario/**", "/api/produto/pesquisar", "/api/produto/abrirpesquisa", "/api/produto/remover", "/api/produto/alterar").hasRole("ADMIN")
-                .antMatchers("/api/locacao/abririnserir", "/api/locacao/cadastrar").hasAnyRole("ADMIN", "USUARIO")
+                .antMatchers("/api/locacao/**").hasAnyRole("ADMIN", "USUARIO")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                    .loginPage("/login")
-                .permitAll()
+                    .loginPage("/login").permitAll()
+                    .defaultSuccessUrl("/")
                     .and()
                 .logout()
                     .logoutSuccessUrl("/");

@@ -8,6 +8,8 @@ import com.dawii.trabfinal.repositories.IPessoaRepository;
 import com.dawii.trabfinal.services.IPessoaService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -20,17 +22,19 @@ import java.util.Optional;
 public class PessoaService implements IPessoaService {
     private final IPessoaRepository repository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public PessoaResponse cadastrarUsuario(Pessoa request) {
+    public PessoaResponse salvar(Pessoa request) {
         PessoaResponse response = new PessoaResponse();
 
         if (request == null
                 || request.getEmail() == null
                 || request.getNome() == null
                 || request.getSenha() == null
-                || request.getRole() == null
-                || request.getTelContato() == null
-                || request.getEndereco() == null) {
+                || request.getPapeis() == null
+                || request.getUsuario() == null) {
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Verifique os dados do usuário a ser cadastrado");
             return response;
         } else {
@@ -43,6 +47,8 @@ public class PessoaService implements IPessoaService {
             }
 
             try{
+                request.setAtivo(true);
+                request.setSenha(passwordEncoder.encode(request.getUsuario()));
                 getRepository().save(request);
                 response.getMessages().add("Usuario cadastrado com sucesso");
                 response.setPessoas(Arrays.asList(request));
