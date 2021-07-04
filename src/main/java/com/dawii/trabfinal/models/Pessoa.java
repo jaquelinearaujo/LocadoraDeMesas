@@ -38,5 +38,9 @@ public  class Pessoa implements Serializable {
     private List<Papel> papeis = new ArrayList<>();
     @NotBlank(message = "Usuario é requerido")
     private String usuario;
-
+    @ManyToMany
+    @JoinTable(name = "usuario_locacao",
+            joinColumns = @JoinColumn(name = "codigo_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "codigo_locacao"))
+    private List<Locacao> locacoes = new ArrayList<>();
 }

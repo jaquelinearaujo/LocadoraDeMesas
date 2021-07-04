@@ -1,25 +1,25 @@
 package com.dawii.trabfinal.services.impl;
 
+import com.dawii.trabfinal.models.Item;
 import com.dawii.trabfinal.models.Locacao;
-import com.dawii.trabfinal.models.Pessoa;
 import com.dawii.trabfinal.models.Produto;
 import com.dawii.trabfinal.models.Status;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
 import com.dawii.trabfinal.models.response.PessoaResponse;
-import com.dawii.trabfinal.models.response.ProdutoResponse;
+import com.dawii.trabfinal.repositories.IItemRepository;
 import com.dawii.trabfinal.repositories.ILocacaoRepository;
 import com.dawii.trabfinal.services.ILocacaoService;
 import com.dawii.trabfinal.services.IPessoaService;
-import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @Data
@@ -27,32 +27,44 @@ import java.util.stream.Collectors;
 public class LocacaoService implements ILocacaoService, Serializable {
 
     private final ILocacaoRepository repository;
-    private final IProdutoService ProdutoService;
     private final IPessoaService pessoaService;
+    private final IItemRepository itemRepository;
 
     @Override
     public LocacaoResponse insertLocacao(Locacao request) {
         LocacaoResponse response = new LocacaoResponse();
 
         if (request == null
-                || request.getDtInicioLocacao() == null
-                || request.getDtFimLocacao() == null
-                || request.getCodProduto() == null
-                || request.getCodPessoa() == null
-                || request.getValTotal() == null){
+                || request.getDataInicio() == null
+                || request.getDataFim() == null
+                || request.getProdutos() == null){
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para Locacao estão presentes");
             return response;
-        }
-        ProdutoResponse produtoResponse = buscarProdutoResponse(request);
+        }else{
+            try {
+                Authentication user = SecurityContextHolder.getContext().getAuthentication();
+                PessoaResponse pessoa = getPessoaService().buscarPessoaPorUser(user.getName());
+                request.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
+                request.setValTotal(0f);
 
-        if (produtoResponse.getProdutos() == null || produtoResponse.getProdutos().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto do locacao exista");
-            response.getMessages().addAll(produtoResponse.getMessages());
-            return response;
+                request.getProdutos().stream().forEach(produto -> request.setValTotal(request.getValTotal() + produto.getPreco()));
+
+                Locacao locacao = getRepository().save(request);
+
+                for (Produto p: request.getProdutos()) {
+                    Item item = new Item();
+                    item.setCodigoLocacao(locacao.getCodigo());
+                    item.setCodigoProduto(p.getCodigo());
+
+                    getItemRepository().save(item);
+                }
+
+                response.setLocacoes(Arrays.asList(locacao));
+            }catch (Exception e){
+                applyErrorMessage(Status.VALIDATION_ERROR,response,"Locacao nao cadastrada");
+            }
         }
 
-        Locacao locacao = getRepository().save(request);
-        response.setLocacoes(Arrays.asList(locacao));
         return response;
     }
 
@@ -89,31 +101,7 @@ public class LocacaoService implements ILocacaoService, Serializable {
         return response;
     }
 
-    @Override
-    public LocacaoResponse buscarProdutoPorId(Locacao request) {
-        LocacaoResponse response = new LocacaoResponse();
 
-        if (request == null || request.getCodProduto() == null ){
-            applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
-            return response;
-        }/*
-        ProdutoResponse marcaResponse = buscarProdutoResponse(request);
-
-        if (marcaResponse.getProdutos() == null || marcaResponse.getProdutos().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto da lcoacao existe");
-            response.getMessages().addAll(marcaResponse.getMessages());
-            return response;
-        }*/
-
-        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodProduto(request.getCodProduto());
-        if (locacaoOptionalList == null || locacaoOptionalList.isEmpty()){
-            applyErrorMessage(Status.FAIL,response,"Patrimonios requisitados não existem");
-            return response;
-        }
-
-        response.setLocacoes(locacaoOptionalList.stream().map(p -> p.get()).collect(Collectors.toList()));
-        return response;
-    }
 /*
     @Override
     public LocacaoResponse buscarPessoaPorId(Locacao request) {
@@ -168,11 +156,10 @@ public class LocacaoService implements ILocacaoService, Serializable {
         LocacaoResponse response = new LocacaoResponse();
 
         if (request == null
-                || request.getCodigo() == null
-                || request.getCodProduto() == null
+                || request.getDataInicio() == null
+                || request.getDataFim() == null
+                || request.getProdutos() == null
                 || request.getCodPessoa() == null
-                || request.getDtInicioLocacao() == null
-                || request.getDtInicioLocacao() == null
                 || request.getValTotal() == null){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos de Locacao para ser editada estão presentes");
             return response;
@@ -184,14 +171,6 @@ public class LocacaoService implements ILocacaoService, Serializable {
             return response;
         }
 
-        ProdutoResponse produtoResponse = buscarProdutoResponse(request);
-
-        if (produtoResponse.getProdutos() == null || produtoResponse.getProdutos().isEmpty()){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a Produto da Locacao existe");
-            response.getMessages().addAll(produtoResponse.getMessages());
-            return response;
-        }
-
         response.setLocacoes(Arrays.asList(getRepository().save(request)));
 
         return response;
@@ -200,20 +179,5 @@ public class LocacaoService implements ILocacaoService, Serializable {
     private void applyErrorMessage(Status status, LocacaoResponse response, String message) {
         response.setStatus(status);
         response.getMessages().add(message);
-    }
-
-    private ProdutoResponse buscarProdutoResponse(Locacao request) {
-        Produto produto = new Produto();
-        produto.setCodigo(request.getCodProduto());
-        Produto produtoRequest = new Produto();
-        ProdutoResponse produtoResponse = getProdutoService().buscarProdutoPorId(produtoRequest);
-        return produtoResponse;
-    }
-
-    private PessoaResponse buscarPessoaResponse(Locacao request) {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setCodigo(request.getCodPessoa());
-        PessoaResponse pessoaResponse = getPessoaService().buscarPessoaPorId(pessoa);
-        return pessoaResponse;
     }
 }

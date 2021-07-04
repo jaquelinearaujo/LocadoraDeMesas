@@ -24,18 +24,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/vendor/**","/fonts/**","/css/**", "/images/**", "/js/**","/").permitAll()
-                .antMatchers("/api/usuario/**", "/api/produto/pesquisar", "/api/produto/abrirpesquisa", "/api/produto/remover", "/api/produto/alterar").hasRole("ADMIN")
-                .antMatchers("/api/locacao/**").hasAnyRole("ADMIN", "USUARIO")
-                .anyRequest().authenticated()
+            .authorizeRequests()
+            .antMatchers("/vendor/**","/fonts/**","/css/**", "/images/**", "/js/**","/").permitAll()
+            .antMatchers("/api/usuario/**", "/api/produto/pesquisar", "/api/produto/abrirpesquisa", "/api/produto/remover", "/api/produto/alterar").hasRole("ADMIN")
+            .antMatchers("/api/locacao/**").hasAnyRole("ADMIN", "USUARIO")
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .loginPage("/login").permitAll()
+                .defaultSuccessUrl("/")
                 .and()
-                .formLogin()
-                    .loginPage("/login").permitAll()
-                    .defaultSuccessUrl("/")
-                    .and()
-                .logout()
-                    .logoutSuccessUrl("/");
+            .logout()
+                .logoutSuccessUrl("/");
     }
 
     @Autowired

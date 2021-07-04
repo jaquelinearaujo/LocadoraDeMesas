@@ -11,15 +11,19 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "historico")
+@Table(name = "item")
 public class Item implements Serializable {
-    private static final long serialVersionUID = -8873580871502135134L;
+    private static final long serialVersionUID = -3873580871502135134L;
 
     @Id
-    @SequenceGenerator(name="gerador", sequenceName="historico_codigo_seq", allocationSize=1)
+    @SequenceGenerator(name="gerador", sequenceName="item_codigo_seq", allocationSize=1)
     @GeneratedValue(generator="gerador", strategy= GenerationType.SEQUENCE)
     private Long codigo;
     @Column(name = "cod_locacao")
-    private Long codLocacao;
-    private String data;
+    private Long codigoLocacao;
+    @Column(name = "cod_produto")
+    private Long codigoProduto;
+
+    public Item(Long codigo, Long codigo1) {
+    }
 }

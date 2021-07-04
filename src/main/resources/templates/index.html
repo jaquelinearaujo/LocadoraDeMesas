@@ -4,6 +4,11 @@
 	  xmlns:layout="http://www.thymeleaf.org">
 <head>
 	<title>Página Principal</title>
+	<script type="text/javascript">
+        setTimeout(function() {
+            $(".alert").fadeOut().empty();
+        }, 5000);
+	</script>
 </head>
 <body>
 <div layout:fragment="conteudo" class="container" id="conteudo">

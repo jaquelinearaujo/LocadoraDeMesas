@@ -2,7 +2,6 @@ package com.dawii.trabfinal.services.impl;
 
 import com.dawii.trabfinal.models.Pessoa;
 import com.dawii.trabfinal.models.Status;
-import com.dawii.trabfinal.models.request.PessoaRequest;
 import com.dawii.trabfinal.models.response.PessoaResponse;
 import com.dawii.trabfinal.repositories.IPessoaRepository;
 import com.dawii.trabfinal.services.IPessoaService;
@@ -39,16 +38,21 @@ public class PessoaService implements IPessoaService {
             return response;
         } else {
             request.setNome(request.getNome().trim());
-            request.setSenha((request.getSenha()));//TODO codificar senha
+            request.setSenha((request.getSenha()));
 
             if (getRepository().findByEmail(request.getEmail()).isPresent()){
                 applyErrorMessage(Status.FAIL,response,"Email já cadastrado");
                 return response;
             }
 
+            if (getRepository().findByUsuario(request.getUsuario()).isPresent()){
+                applyErrorMessage(Status.FAIL,response,"Usuario já cadastrado");
+                return response;
+            }
+
             try{
                 request.setAtivo(true);
-                request.setSenha(passwordEncoder.encode(request.getUsuario()));
+                request.setSenha(passwordEncoder.encode(request.getSenha()));
                 getRepository().save(request);
                 response.getMessages().add("Usuario cadastrado com sucesso");
                 response.setPessoas(Arrays.asList(request));
@@ -57,11 +61,6 @@ public class PessoaService implements IPessoaService {
             }
         }
         return response;
-    }
-
-    @Override
-    public PessoaResponse entrar(PessoaRequest request) {
-        return null;
     }
 
     @Override
@@ -89,7 +88,26 @@ public class PessoaService implements IPessoaService {
 
         Optional<Pessoa> pessoaOptional = getRepository().findById(request.getCodigo());
         if (!pessoaOptional.isPresent()){
-            applyErrorMessage(Status.FAIL,response,"Mesa requisitada não existe");
+            applyErrorMessage(Status.FAIL,response,"Pessoa requisitada não existe");
+            return response;
+        }
+
+        response.setPessoas(Arrays.asList(pessoaOptional.get()));
+        return response;
+    }
+
+    @Override
+    public PessoaResponse buscarPessoaPorUser(String request) {
+        PessoaResponse response = new PessoaResponse();
+
+        if (request == null ){
+            applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para mesa estão presentes");
+            return response;
+        }
+
+        Optional<Pessoa> pessoaOptional = getRepository().findByUsuario(request);
+        if (!pessoaOptional.isPresent()){
+            applyErrorMessage(Status.FAIL,response,"Pessoa requisitada não existe");
             return response;
         }
 

@@ -7,7 +7,6 @@ public interface ILocacaoService {
     public LocacaoResponse insertLocacao(Locacao request);
     public LocacaoResponse buscarTodos();
     public LocacaoResponse buscarLocacaoPorId(Locacao request);
-    public LocacaoResponse buscarProdutoPorId(Locacao request);
     public LocacaoResponse apagarLocacao(Locacao request);
     public LocacaoResponse editarLocacao(Locacao request);
 }
