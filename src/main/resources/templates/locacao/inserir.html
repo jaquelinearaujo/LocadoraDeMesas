@@ -10,23 +10,27 @@
 <div layout:fragment="conteudo" class="container" id="conteudo">
 	<fieldset style="border: 3px solid black; padding: 10px">
 		<legend style="width: auto">Nova Locação:</legend>
-		<form action="#" th:action="@{/api/locacao/cadastrar}" th:object="${locacao}" method="post" class="col-10 needs-validation" th:fragment="formulario">
+		<form action="#" th:action="@{/api/locacao/cadastrar}" th:object="${locacaoRequest}" method="post" class="col-10 needs-validation" th:fragment="formulario">
 			<div class="row mb-3 has-validation" th:each="produto: ${produtos}">
-				<input type="checkbox" class="form-control" th:field="*{produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
-				<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
+				<input type="checkbox" class="form-control" th:field="*{locacao.produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
+				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
 				<span> Preço: R$</span>
-				<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
+				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
+				<span> Estoque atual:</span>
+				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.estoqueAtual}"></label>
+				<label for="quantidade" class="form-label">Quntidade:</label>
+				<input type="number" class="form-control" th:field="*{quantidades}" th:errorclass="is-invalid" id="quantidade">
 			</div>
 
 			<div class="row mb-3 has-validation">
 				<label for="dataInicio" class="form-label">Data de inicio:</label>
-				<input type="date" class="form-control" th:field="*{dataInicio}" th:errorclass="is-invalid" id="dataInicio">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('dataInicio')}" th:each="erro : ${#fields.errors('dataInicio')}" th:text="${erro} + '. '">Erro na dataInicio</span>
+				<input type="date" class="form-control" th:field="*{locacao.dataInicio}" th:errorclass="is-invalid" id="dataInicio">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('locacao.dataInicio')}" th:each="erro : ${#fields.errors('locacao.dataInicio')}" th:text="${erro} + '. '">Erro na dataInicio</span>
 			</div>
 			<div class="row mb-3 has-validation">
 				<label for="dataFim" class="form-label">Data fim:</label>
-				<input type="date" class="form-control" th:field="*{dataFim}" th:errorclass="is-invalid" id="dataFim">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('dataFim')}" th:each="erro : ${#fields.errors('dataFim')}" th:text="${dataFim} + '. '">Erro na dataFim</span>
+				<input type="date" class="form-control" th:field="*{locacao.dataFim}" th:errorclass="is-invalid" id="dataFim">
+				<span class="invalid-feedback" th:if="${#fields.hasErrors('locacao.dataFim')}" th:each="erro : ${#fields.errors('locacao.dataFim')}" th:text="${locacao.dataFim} + '. '">Erro na dataFim</span>
 			</div>
 			<button type="submit" class="btn btn-primary mt-2">Save</button>
 		</form>

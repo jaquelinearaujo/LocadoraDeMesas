@@ -4,12 +4,14 @@ import com.dawii.trabfinal.models.Item;
 import com.dawii.trabfinal.models.Locacao;
 import com.dawii.trabfinal.models.Produto;
 import com.dawii.trabfinal.models.Status;
+import com.dawii.trabfinal.models.request.LocacaoRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
 import com.dawii.trabfinal.models.response.PessoaResponse;
 import com.dawii.trabfinal.repositories.IItemRepository;
 import com.dawii.trabfinal.repositories.ILocacaoRepository;
 import com.dawii.trabfinal.services.ILocacaoService;
 import com.dawii.trabfinal.services.IPessoaService;
+import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.Authentication;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,35 +32,52 @@ public class LocacaoService implements ILocacaoService, Serializable {
     private final ILocacaoRepository repository;
     private final IPessoaService pessoaService;
     private final IItemRepository itemRepository;
+    private final IProdutoService produtoService;
 
     @Override
-    public LocacaoResponse insertLocacao(Locacao request) {
+    public LocacaoResponse insertLocacao(LocacaoRequest request) {
         LocacaoResponse response = new LocacaoResponse();
 
         if (request == null
-                || request.getDataInicio() == null
-                || request.getDataFim() == null
-                || request.getProdutos() == null){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para Locacao estão presentes");
+                || request.getLocacao() == null
+                || request.getLocacao().getDataInicio() == null
+                || request.getLocacao().getDataFim() == null
+                || request.getLocacao().getProdutos() == null
+                || request.getLocacao().getProdutos().size() != request.getQuantidades().size()){
+            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para Locacao estão presentes e corretos");
             return response;
         }else{
             try {
                 Authentication user = SecurityContextHolder.getContext().getAuthentication();
                 PessoaResponse pessoa = getPessoaService().buscarPessoaPorUser(user.getName());
-                request.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
-                request.setValTotal(0f);
 
-                request.getProdutos().stream().forEach(produto -> request.setValTotal(request.getValTotal() + produto.getPreco()));
+                Locacao locacao = request.getLocacao();
+                locacao.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
+                locacao.setValTotal(0f);
 
-                Locacao locacao = getRepository().save(request);
-
-                for (Produto p: request.getProdutos()) {
+                List<Item> items = new ArrayList<>();
+                for (Produto p: locacao.getProdutos()) {
                     Item item = new Item();
-                    item.setCodigoLocacao(locacao.getCodigo());
                     item.setCodigoProduto(p.getCodigo());
+                    Integer produtoIndex = request.getLocacao().getProdutos().indexOf(p);
+                    item.setQuantidade(request.getQuantidades().get(produtoIndex));
 
-                    getItemRepository().save(item);
+                    Integer estoque = p.getEstoqueAtual() - item.getQuantidade();
+                    if (estoque < 0){
+                        applyErrorMessage(Status.FAIL, response, "Selecione uma quantidade de estoque que não ultrapasse o estoque atual");
+                        return response;
+                    }
+                    p.setEstoqueAtual(estoque);
+                    getProdutoService().editarProduto(p);
+
+                    locacao.setValTotal(locacao.getValTotal() + (item.getQuantidade() * p.getPreco()));
+                    items.add(item);
                 }
+
+                locacao = getRepository().save(locacao);
+                final Long codLocacao = locacao.getCodigo();
+                items.stream().forEach(item -> item.setCodigoLocacao(codLocacao));
+                items.stream().forEach(item -> getItemRepository().save(item));
 
                 response.setLocacoes(Arrays.asList(locacao));
             }catch (Exception e){

@@ -1,16 +1,13 @@
 package com.dawii.trabfinal.controllers;
 
 import com.dawii.trabfinal.models.Locacao;
-import com.dawii.trabfinal.models.Produto;
+import com.dawii.trabfinal.models.request.LocacaoRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
 import com.dawii.trabfinal.models.response.ProdutoResponse;
-import com.dawii.trabfinal.repositories.IPessoaRepository;
-import com.dawii.trabfinal.repositories.IProdutoRepository;
 import com.dawii.trabfinal.services.ILocacaoService;
 import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/locacao")
@@ -29,26 +25,30 @@ public class LocacaoController {
     private final ILocacaoService service;
     private final IProdutoService produtoService;
 
-    @Autowired
-    private IProdutoRepository produtoRepository;
-    @Autowired
-    private IPessoaRepository pessoaRepository;
 
     @GetMapping("/abririnserir")
-    public ModelAndView abrirInserir(Locacao locacao) {
+    public ModelAndView abrirInserir(LocacaoRequest request) {
         ModelAndView mv = new ModelAndView("/locacao/inserir");
-        List<Produto> produtos = produtoRepository.findAll();
-        mv.addObject("produtos", produtos);
-        mv.addObject("locacao", locacao);
+        ProdutoResponse response = getProdutoService().buscarTodos();
+        request.setLocacao(new Locacao());
+        mv.addObject("produtos", response.getProdutos());
+        mv.addObject("locacaoRequest", request);
         return mv;
     }
 
     @PostMapping(value = { "/cadastrar" })
-    public ModelAndView inserirProduto(@Valid Locacao request, BindingResult result, Model model, RedirectAttributes atributos){
-        getService().insertLocacao(request);
-
+    public ModelAndView inserirProduto(@Valid LocacaoRequest locacaoRequest, BindingResult result, Model model, RedirectAttributes atributos){
+        LocacaoResponse locacaoResponse = getService().insertLocacao(locacaoRequest);
         ProdutoResponse response = getProdutoService().buscarTodos();
         ModelAndView mv = new ModelAndView();
+
+        if (!locacaoResponse.getMessages().isEmpty()){
+            mv.setViewName("/index");
+            mv.addObject("mensagem", locacaoResponse.getMessages().get(0));
+            mv.addObject("produtos", response.getProdutos());
+            return mv;
+        }
+
         mv.setViewName("/index");
         mv.addObject("produtos", response.getProdutos());
         return mv;
