@@ -23,7 +23,10 @@ public class Item implements Serializable {
     private Long codigoLocacao;
     @Column(name = "cod_produto")
     private Long codigoProduto;
+    private Integer quantidade;
 
-    public Item(Long codigo, Long codigo1) {
+    public Item(Long codigoLocacao, Long codigoProduto) {
+        this.codigoLocacao = codigoLocacao;
+        this.codigoProduto = codigoProduto;
     }
 }

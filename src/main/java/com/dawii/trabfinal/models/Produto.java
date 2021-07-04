@@ -26,4 +26,6 @@ public class Produto implements Serializable {
     private String descricao;
     private Float preco;
     private Integer estoque;
+    @Column(name = "estoque_atual")
+    private Integer estoqueAtual;
 }

@@ -47,6 +47,7 @@ public class ProdutoService implements IProdutoService {
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para produto estão presentes");
             return response;
         }else{
+            request.setEstoqueAtual(request.getEstoque());
             getRepository().save(request);
             response.setProdutos(Arrays.asList(request));
         }
@@ -126,6 +127,13 @@ public class ProdutoService implements IProdutoService {
             return response;
         }
 
+        // Applying possible 'estoque' changes
+        if (request.getEstoqueAtual() == null && request.getEstoque() == response.getProdutos().get(0).getEstoque()) {
+            request.setEstoqueAtual(response.getProdutos().get(0).getEstoqueAtual());
+        } else if (request.getEstoqueAtual() == null && request.getEstoque() != response.getProdutos().get(0).getEstoque()) {
+            Integer estoqueAtual = request.getEstoque() - response.getProdutos().get(0).getEstoque() + response.getProdutos().get(0).getEstoqueAtual();
+            request.setEstoqueAtual(estoqueAtual >= 0 ? estoqueAtual : 0);
+        }
         response.setProdutos(Arrays.asList(getRepository().save(request)));
 
         return response;
