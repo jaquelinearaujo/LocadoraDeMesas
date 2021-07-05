@@ -97,6 +97,11 @@ public class LocacaoService implements ILocacaoService, Serializable {
             response.getMessages().add("Não existem locacoes cadastradas");
             return response;
         }
+
+        for (Locacao locacao: locacoes) {
+            addProdutosLocacao(locacao);
+        }
+
         response.setLocacoes(locacoes);
 
         return response;
@@ -117,8 +122,22 @@ public class LocacaoService implements ILocacaoService, Serializable {
             return response;
         }
 
-        response.setLocacoes(Arrays.asList(locacaoOptional.get()));
+        Locacao locacao = locacaoOptional.get();
+        addProdutosLocacao(locacao);
+
+        response.setLocacoes(Arrays.asList(locacao));
         return response;
+    }
+
+    private void addProdutosLocacao(Locacao locacao) {
+        List<Item> itemsLocacao = getItemRepository().findByCodigoLocacao(locacao.getCodigo());
+        itemsLocacao.stream()
+                .map(l -> getProdutoService().buscarProdutoPorId(new Produto(l.getCodigoProduto())))
+                .forEach(produtoResponse -> locacao.getProdutos().addAll(produtoResponse.getProdutos()));
+
+        for (Item item : itemsLocacao) {
+            locacao.getProdutos().stream().filter(produto -> produto.getCodigo() == item.getCodigoProduto()).findFirst().get().setQuantidade(item.getQuantidade());
+        }
     }
 
 
