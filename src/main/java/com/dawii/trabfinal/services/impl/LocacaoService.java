@@ -55,6 +55,9 @@ public class LocacaoService implements ILocacaoService, Serializable {
                 locacao.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
                 locacao.setValTotal(0f);
 
+                Locacao locacao = request.getLocacao();
+                locacao.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
+                locacao.setValTotal(0f);
                 List<Item> items = new ArrayList<>();
                 for (Produto p: locacao.getProdutos()) {
                     Item item = new Item();
