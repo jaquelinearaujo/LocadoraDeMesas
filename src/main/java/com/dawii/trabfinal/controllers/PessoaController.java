@@ -37,17 +37,31 @@ public class PessoaController {
 
     @PostMapping("/cadastrar")
     public ModelAndView cadastrar(Pessoa request){
-        getService().salvar(request);
-        PessoaResponse response = getService().buscarTodos();
-        ModelAndView mv = new ModelAndView("usuario/mostrartodos");
-        mv.addObject("usuarios", response.getPessoas());
+        PessoaResponse pessoaResponse = getService().salvar(request);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("/index");
+
+        if (!pessoaResponse.getMessages().isEmpty()){
+            mv.addObject("mensagem", pessoaResponse.getMessages().get(0));
+            return mv;
+        }
+        pessoaResponse = getService().buscarTodos();
+        mv = new ModelAndView("usuario/mostrartodos");
+        mv.addObject("usuarios", pessoaResponse.getPessoas());
         return mv;
     }
 
     @GetMapping("/abrirmostrartodos")
     public ModelAndView abrirMostrarTodos() {
         PessoaResponse response = getService().buscarTodos();
-        ModelAndView mv = new ModelAndView("usuario/mostrartodos");
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("/index");
+
+        if (!response.getMessages().isEmpty()){
+            mv.addObject("mensagem", response.getMessages().get(0));
+            return mv;
+        }
+        mv = new ModelAndView("usuario/mostrartodos");
         mv.addObject("usuarios", response.getPessoas());
         return mv;
     }
