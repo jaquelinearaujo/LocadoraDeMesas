@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Data
@@ -55,8 +56,7 @@ public class LocacaoService implements ILocacaoService, Serializable {
                 || request.getLocacao() == null
                 || request.getLocacao().getDataInicio() == null
                 || request.getLocacao().getDataFim() == null
-                || request.getLocacao().getProdutos() == null
-                || request.getLocacao().getProdutos().size() != request.getQuantidades().size()){
+                || request.getLocacao().getProdutos() == null){
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para Locacao estão presentes e corretos");
             return response;
         }else{
@@ -69,11 +69,16 @@ public class LocacaoService implements ILocacaoService, Serializable {
                 locacao.setValTotal(0f);
 
                 List<Item> items = new ArrayList<>();
+                List<Integer> quantidades = request.getQuantidades().stream().filter(i -> i != null).collect(Collectors.toList());
+                if (quantidades.size() != locacao.getProdutos().size()){
+                    applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que o item esteja selecionado para passar uma quantidade deste");
+                    return response;
+                }
                 for (Produto p: locacao.getProdutos()) {
                     Item item = new Item();
                     item.setCodigoProduto(p.getCodigo());
                     Integer produtoIndex = request.getLocacao().getProdutos().indexOf(p);
-                    item.setQuantidade(request.getQuantidades().get(produtoIndex));
+                    item.setQuantidade(quantidades.get(produtoIndex));
 
                     Integer estoque = p.getEstoqueAtual() - item.getQuantidade();
                     if (estoque < 0){
