@@ -13,7 +13,6 @@
 					<tr>
 						<th scope="col">Locação</th>
 						<div th:replace="~{fragments/paginacao :: coluna(${pagina}, 'dataInicio', 'Data de inicio')}"></div>
-						<th scope="col">Editar</th>
 						<th scope="col">Remover</th>
 					</tr>
 				</thead>
@@ -21,14 +20,6 @@
 					<tr th:each="locacao : ${pagina.conteudo}" th:object="${locacaoFilter}">
 						<th scope="row" th:text="*{codigo}">1</th>
 						<td th:text="*{dataInicio}">Joao</td>
-						<td>
-							<form action="#" th:action="@{/api/locacao/buscar}" method="post">
-								<input type="hidden" name="codigo" th:value="*{codigo}">
-								<button type="submit" class="btn btn-warning btn-floating">
-									<i class="bi bi-pencil"></i>
-								</button>
-							</form>
-						</td>
 						<td>
 							<form action="#" th:action="@{/api/locacao/remover}" method="post">
 								<input type="hidden" name="codigo" th:value="*{codigo}" id="codigo">
@@ -46,7 +37,7 @@
 
 			<div th:replace="~{fragments/paginacao :: paginacao(${pagina})}"></div>		
 			
-			<a th:href="@{/fabricante/abrirpesquisa}" class="link-primary">Voltar</a>
+			<a th:href="@{/}" class="link-primary">Voltar</a>
 		</div>
 	</div>
 

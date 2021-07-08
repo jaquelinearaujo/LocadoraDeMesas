@@ -4,15 +4,20 @@ import com.dawii.trabfinal.models.Locacao;
 import com.dawii.trabfinal.models.filter.LocacaoFilter;
 import com.dawii.trabfinal.models.request.LocacaoRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
+import com.dawii.trabfinal.models.response.PessoaResponse;
 import com.dawii.trabfinal.models.response.ProdutoResponse;
 import com.dawii.trabfinal.pagination.PageWrapper;
 import com.dawii.trabfinal.services.ILocacaoService;
+import com.dawii.trabfinal.services.IPessoaService;
 import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +34,7 @@ import javax.validation.Valid;
 public class LocacaoController {
     private final ILocacaoService service;
     private final IProdutoService produtoService;
+    private final IPessoaService pessoaService;
 
 
     @GetMapping("/abririnserir")
@@ -100,16 +106,27 @@ public class LocacaoController {
         mv.addObject("locacoes", response.getLocacoes());
         return mv;
     }
-    @PostMapping("/alterar")
-    @PutMapping
-    public ModelAndView editarLocacao(Locacao request){
-        getService().editarLocacao(request);
 
-        LocacaoResponse response = getService().buscarTodos();
+    @GetMapping("/mostrartodos")
+    public ModelAndView mostrarTodasLocacoes(Locacao request){
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        PessoaResponse pessoa = getPessoaService().buscarPessoaPorUser(user.getName());
+
+        LocacaoResponse response = getService().buscarLocacaoPorPessoaPorId(pessoa.getPessoas().get(0).getCodigo());
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("/index");
-        mv.addObject("mensagem", "Locacao alterada com sucesso");
-        mv.addObject("produtos", response.getLocacoes());
+        mv.setViewName("/locacao/mostrar");
+        mv.addObject("locacoes", response.getLocacoes());
         return mv;
+    }
+
+    @GetMapping("/relatorio")
+    public ResponseEntity<byte[]> gerarRelatorioSimplesTodasPessoas() {
+//        byte[] relatorio = relatorioService.gerarRelatorioSimplesTodasPessoas();
+//
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=PessoasSimples.pdf")
+//                .body(relatorio);
+        return null;
     }
 }

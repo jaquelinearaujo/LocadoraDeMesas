@@ -11,7 +11,7 @@ public interface ILocacaoService {
     public LocacaoResponse insertLocacao(LocacaoRequest request);
     public LocacaoResponse buscarTodos();
     public LocacaoResponse buscarLocacaoPorId(Locacao request);
-    public LocacaoResponse buscarPessoaPorId(LocacaoRequest request);
+    public LocacaoResponse buscarLocacaoPorPessoaPorId(Long request);
     public LocacaoResponse apagarLocacao(Locacao request);
     public LocacaoResponse editarLocacao(Locacao request);
     public Page<Locacao> pesquisar(LocacaoFilter filtro, Pageable pageable);

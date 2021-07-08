@@ -7,49 +7,45 @@
 <div layout:fragment="conteudo"  class="container" id="conteudo">
 	<fieldset style="border: 3px solid black; padding: 10px">
 		<legend style="width: auto">Locação:</legend>
-		<form action="#" th:action="@{/api/locacao/alterar}" th:object="${locacao}" method="post" class="col-10">
-			<input type="hidden" th:field="*{codigo}">
 			<table class="table">
 				<thead>
 				<tr>
 					<th scope="col">#</th>
 					<th scope="col">Produto</th>
 					<th scope="col">Preço</th>
-					<th scope="col">Estoque atual</th>
 					<th scope="col">Quantidade</th>
+					<th scope="col">Data inicial</th>
+					<th scope="col">Data final</th>
+					<th scope="col">Valor da locação</th>
 				</tr>
 				</thead>
-				<tbody>
-				<tr th:each="produto: ${produtos}">
-					<th scope="row">
-						<input type="checkbox" class="form-control" th:field="*{produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
-					</th>
-					<th scope="row">
-						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
-					</th>
-					<th scope="row">
-						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
-					</th>
-					<th scope="row">
-						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.estoqueAtual}"></label>
-					</th>
-					<th scope="row">
-						<input type="number" class="form-control" th:field="*{produto.quantidade}" th:errorclass="is-invalid">
-					</th>
+				<tbody th:each="locacao: ${locacoes}">
+
+				<tr th:each="produto: ${locacao.produtos}">
+					<td scope="row">
+						<label class="form-label" th:text="${locacao.codigo}">Produto:</label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${produto.nome}">Produto:</label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${produto.preco}">Preço:</label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${produto.quantidade}"></label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${locacao.dataInicio}"></label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${locacao.dataFim}"></label>
+					</td>
+					<td scope="row">
+						<label class="form-label" th:text="${locacao.valTotal}"></label>
+					</td>
 				</tr>
 				</tbody>
 			</table>
-
-			<div class="row mb-3 has-validation">
-				<label for="dataInicio" class="form-label">Data de inicio:</label>
-				<input type="date" class="form-control" th:field="*{dataInicio}" th:errorclass="is-invalid" id="dataInicio">
-			</div>
-			<div class="row mb-3 has-validation">
-				<label for="dataFim" class="form-label">Data fim:</label>
-				<input type="date" class="form-control" th:field="*{dataFim}" th:errorclass="is-invalid" id="dataFim">
-			</div>
-			<button type="submit" class="btn btn-primary mt-2">Save</button>
-		</form>
 	</fieldset>
 	<a th:href="@{/}" class="btn btn-dark mt-2">Voltar</a>
 </div>

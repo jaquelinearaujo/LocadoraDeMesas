@@ -1,11 +1,13 @@
 package com.dawii.trabfinal.services.impl;
 
-import com.dawii.trabfinal.models.*;
+import com.dawii.trabfinal.models.Item;
+import com.dawii.trabfinal.models.Locacao;
+import com.dawii.trabfinal.models.Produto;
+import com.dawii.trabfinal.models.Status;
 import com.dawii.trabfinal.models.filter.LocacaoFilter;
 import com.dawii.trabfinal.models.request.LocacaoRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
 import com.dawii.trabfinal.models.response.PessoaResponse;
-import com.dawii.trabfinal.models.response.ProdutoResponse;
 import com.dawii.trabfinal.repositories.IItemRepository;
 import com.dawii.trabfinal.repositories.ILocacaoRepository;
 import com.dawii.trabfinal.repositories.pagination.PaginacaoUtil;
@@ -148,31 +150,25 @@ public class LocacaoService implements ILocacaoService, Serializable {
     }
 
     @Override
-    public LocacaoResponse buscarPessoaPorId(LocacaoRequest request) {
+    public LocacaoResponse buscarLocacaoPorPessoaPorId(Long request) {
         LocacaoResponse response = new LocacaoResponse();
 
-        if (request == null || request.getLocacao().getCodigo() == null ){
+        if (request == null || request == null ){
             applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
             return response;
         }
-        PessoaResponse pessoaResponse = buscarPessoaResponse(request.getLocacao());
 
-        if (pessoaResponse == null){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a pessoa da locacao existe");
-            response.getMessages().addAll(pessoaResponse.getMessages());
-            return response;
-        }
-
-        Optional<Locacao> locacaoOptional = getRepository().findByCodPessoa(request.getLocacao().getCodPessoa());
-        if (locacaoOptional == null || locacaoOptional.isEmpty()){
+        List<Locacao> locacoes = getRepository().findByCodPessoa(request);
+        if (locacoes == null){
             applyErrorMessage(Status.FAIL,response,"Locacoes requisitadas não existem");
             return response;
         }
 
-        Locacao locacao = locacaoOptional.get();
-        addProdutosLocacao(locacao);
+        for (Locacao locacao: locacoes) {
+            addProdutosLocacao(locacao);
+        }
 
-        response.setLocacoes(Arrays.asList(locacao));
+        response.setLocacoes(locacoes);
         return response;
     }
 
@@ -283,20 +279,5 @@ public class LocacaoService implements ILocacaoService, Serializable {
     private void applyErrorMessage(Status status, LocacaoResponse response, String message) {
         response.setStatus(status);
         response.getMessages().add(message);
-    }
-
-    private PessoaResponse buscarPessoaResponse(Locacao request) {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setCodigo(request.getCodPessoa());
-        PessoaResponse pessoaResponse = getPessoaService().buscarPessoaPorId(pessoa);
-        return pessoaResponse;
-    }
-
-    private ProdutoResponse buscarProdutoResponse(Locacao request) {
-        Produto produto = new Produto();
-        request.getProdutos().stream().forEach(produto1 -> produto.setCodigo(produto1.getCodigo()));
-
-        ProdutoResponse produtoResponse = getProdutoService().buscarProdutoPorId(produto);
-        return produtoResponse;
     }
 }
