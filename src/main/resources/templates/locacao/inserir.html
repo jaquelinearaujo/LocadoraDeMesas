@@ -11,16 +11,36 @@
 	<fieldset style="border: 3px solid black; padding: 10px">
 		<legend style="width: auto">Nova Locação:</legend>
 		<form action="#" th:action="@{/api/locacao/cadastrar}" th:object="${locacaoRequest}" method="post" class="col-10 needs-validation" th:fragment="formulario">
-			<div class="row mb-3 has-validation" th:each="produto: ${produtos}">
-				<input type="checkbox" class="form-control" th:field="*{locacao.produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
-				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
-				<span> Preço: R$</span>
-				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
-				<span> Estoque atual:</span>
-				<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.estoqueAtual}"></label>
-				<label for="quantidade" class="form-label">Quntidade:</label>
-				<input type="number" class="form-control" th:field="*{quantidades}" th:errorclass="is-invalid" id="quantidade">
-			</div>
+			<table class="table">
+				<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Produto</th>
+					<th scope="col">Preço</th>
+					<th scope="col">Estoque atual</th>
+					<th scope="col">Quantidade</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="produto: ${produtos}">
+					<th scope="row">
+						<input type="checkbox" class="form-control" th:field="*{locacao.produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('locacao.produtos')}" class="form-label" th:text="${produto.estoqueAtual}"></label>
+					</th>
+					<th scope="row">
+						<input type="number" class="form-control" th:field="*{quantidades}" th:errorclass="is-invalid">
+					</th>
+				</tr>
+				</tbody>
+			</table>
 
 			<div class="row mb-3 has-validation">
 				<label for="dataInicio" class="form-label">Data de inicio:</label>

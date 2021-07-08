@@ -155,8 +155,6 @@ public class ProdutoService implements IProdutoService {
             predicateList.add(builder.like(f.<String>get("nome"), "%" + filtro.getNome() + "%"));
         }
 
-
-
         predicateArray = new Predicate[predicateList.size()];
         predicateList.toArray(predicateArray);
 

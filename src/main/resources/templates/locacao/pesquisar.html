@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.thymeleaf.org">
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.thymeleaf.org">
 <head>
-	<title>Pesquisa de Fabricantes</title>
+	<title>Pesquisa de Locações</title>
 </head>
 <body>
-	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-	<div class="container">
-		<h1 class="mb-5 mt-3">Pesquisar Fabricantes</h1>
-			<form action="#!" th:action="@{/fabricante/pesquisar}" th:object="${fabricanteFilter}" method="get" class="col-2">
-				<div class="row mb-3">
-					<label for="codigo" class="form-label">Código</label>
-					<input type="number" class="form-control" th:field="*{codigo}">
-				</div>
-				<div class="row mb-3">
-					<label for="nome">Nome</label>
-					<input type="text" class="form-control" th:field="*{nome}">
-				</div>
-				<input type="submit" class="btn btn-primary mt-2" value="Pesquisar">
-			</form>
-		</div>
+<div layout:fragment="conteudo" class="container" id="conteudo">
+	<div class="alert alert-danger" role="alert" th:if="${mensagem}">
+		<span th:text="${mensagem}"></span>
 	</div>
-
-	<th:block layout:fragment="scripts">
-		<script src="../static/js/index.js" th:src="@{/js/index.js}"></script>
-	</th:block>
-</body>
-</html>
+	<fieldset style="border: 3px solid black; padding: 10px">
+		<legend style="width: auto">Pesquisar Produto:</legend>
+		<form action="#" th:action="@{/api/locacao/pesquisar}" th:object="${locacaoFilter}" method="post" class="col-2">
+			<div class="row mb-3">
+				<label for="codigo" class="form-label">Código</label>
+				<input type="number" class="form-control" th:field="*{codigo}" id="codigo">
+			</div>
+			<div class="row mb-3">
+				<label for="dataInicio" class="form-label">Código</label>
+				<input type="date" class="form-control" th:field="*{dataInicio}" id="dataInicio">
+			</div>
+			<button type="submit" class="btn btn-primary mt-2">Pesquisar</button>
+		</form>
+	</fieldset>
+</div>
 </body>
 </html>

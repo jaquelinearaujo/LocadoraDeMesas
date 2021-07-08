@@ -42,7 +42,7 @@
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownLocacao">
 						<a class="dropdown-item" th:href="@{/api/locacao/abririnserir}">Cadastrar</a>
-						<a class="dropdown-item" href="#">Listar</a>
+						<a class="dropdown-item"th:href="@{/api/locacao/abrirpesquisa}">Listar</a>
 					</div>
 				</li>
 				<li class="nav-item" sec:authorize="!isAuthenticated()">
@@ -53,8 +53,6 @@
 						<input type="submit" class="nav-link btn btn-danger text-white" value="Logout">
 					</form>
 				</li>
-
-
 			</ul>
 		</div>
 	</nav>

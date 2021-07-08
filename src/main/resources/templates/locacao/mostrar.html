@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.thymeleaf.org">
 <head>
-<title>Resultado da Pesquisa</title>
+	<title>Resultado da Pesquisa</title>
 </head>
 <body>
-	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
-		<div class="container">
-			<h1 class="mb-5 mt-5">Fabricante Buscado</h1>
-			<form action="#" th:action="@{/fabricante/alterar}" th:object="${fabricante}" method="post" id="forminserir">
-				<input type="hidden" th:field="*{codigo}">
-				<p>
-					<label for="nome">Nome:</label>
-					<input type="text" th:field="*{nome}" placeholder="nome">
-				</p>
-				<input type="button" id="botaoinserir" value="Alterar">
-			</form>
-			<a th:href="@{/}">Voltar</a>
-		</div>
-	</div>
+<div layout:fragment="conteudo"  class="container" id="conteudo">
+	<fieldset style="border: 3px solid black; padding: 10px">
+		<legend style="width: auto">Locação:</legend>
+		<form action="#" th:action="@{/api/locacao/alterar}" th:object="${locacao}" method="post" class="col-10">
+			<input type="hidden" th:field="*{codigo}">
+			<table class="table">
+				<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Produto</th>
+					<th scope="col">Preço</th>
+					<th scope="col">Estoque atual</th>
+					<th scope="col">Quantidade</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="produto: ${produtos}">
+					<th scope="row">
+						<input type="checkbox" class="form-control" th:field="*{produtos}" th:value="${produto.codigo}" th:errorclass="is-invalid">
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.nome}">Produto:</label>
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.preco}">Preço:</label>
+					</th>
+					<th scope="row">
+						<label th:for="${#ids.prev('produtos')}" class="form-label" th:text="${produto.estoqueAtual}"></label>
+					</th>
+					<th scope="row">
+						<input type="number" class="form-control" th:field="*{produto.quantidade}" th:errorclass="is-invalid">
+					</th>
+				</tr>
+				</tbody>
+			</table>
 
-	<div layout:fragment="scripts">
-		<script th:src="@{/js/alterarfabricante.js}"></script>
-	</div>
+			<div class="row mb-3 has-validation">
+				<label for="dataInicio" class="form-label">Data de inicio:</label>
+				<input type="date" class="form-control" th:field="*{dataInicio}" th:errorclass="is-invalid" id="dataInicio">
+			</div>
+			<div class="row mb-3 has-validation">
+				<label for="dataFim" class="form-label">Data fim:</label>
+				<input type="date" class="form-control" th:field="*{dataFim}" th:errorclass="is-invalid" id="dataFim">
+			</div>
+			<button type="submit" class="btn btn-primary mt-2">Save</button>
+		</form>
+	</fieldset>
+	<a th:href="@{/}" class="btn btn-dark mt-2">Voltar</a>
+</div>
 </body>
 </html>

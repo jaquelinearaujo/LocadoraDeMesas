@@ -1,23 +1,34 @@
 package com.dawii.trabfinal.services.impl;
 
-import com.dawii.trabfinal.models.Item;
-import com.dawii.trabfinal.models.Locacao;
-import com.dawii.trabfinal.models.Produto;
-import com.dawii.trabfinal.models.Status;
+import com.dawii.trabfinal.models.*;
+import com.dawii.trabfinal.models.filter.LocacaoFilter;
 import com.dawii.trabfinal.models.request.LocacaoRequest;
 import com.dawii.trabfinal.models.response.LocacaoResponse;
 import com.dawii.trabfinal.models.response.PessoaResponse;
+import com.dawii.trabfinal.models.response.ProdutoResponse;
 import com.dawii.trabfinal.repositories.IItemRepository;
 import com.dawii.trabfinal.repositories.ILocacaoRepository;
+import com.dawii.trabfinal.repositories.pagination.PaginacaoUtil;
 import com.dawii.trabfinal.services.ILocacaoService;
 import com.dawii.trabfinal.services.IPessoaService;
 import com.dawii.trabfinal.services.IProdutoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.QueryHints;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +39,13 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 public class LocacaoService implements ILocacaoService, Serializable {
+    @PersistenceContext
+    private EntityManager manager;
 
     private final ILocacaoRepository repository;
     private final IPessoaService pessoaService;
-    private final IItemRepository itemRepository;
     private final IProdutoService produtoService;
+    private final IItemRepository itemRepository;
 
     @Override
     public LocacaoResponse insertLocacao(LocacaoRequest request) {
@@ -55,7 +68,6 @@ public class LocacaoService implements ILocacaoService, Serializable {
                 locacao.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
                 locacao.setValTotal(0f);
 
-                Locacao locacao = request.getLocacao();
                 locacao.setCodPessoa(pessoa.getPessoas().get(0).getCodigo());
                 locacao.setValTotal(0f);
                 List<Item> items = new ArrayList<>();
@@ -132,6 +144,35 @@ public class LocacaoService implements ILocacaoService, Serializable {
         return response;
     }
 
+    @Override
+    public LocacaoResponse buscarPessoaPorId(LocacaoRequest request) {
+        LocacaoResponse response = new LocacaoResponse();
+
+        if (request == null || request.getLocacao().getCodigo() == null ){
+            applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
+            return response;
+        }
+        PessoaResponse pessoaResponse = buscarPessoaResponse(request.getLocacao());
+
+        if (pessoaResponse == null){
+            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a pessoa da locacao existe");
+            response.getMessages().addAll(pessoaResponse.getMessages());
+            return response;
+        }
+
+        Optional<Locacao> locacaoOptional = getRepository().findByCodPessoa(request.getLocacao().getCodPessoa());
+        if (locacaoOptional == null || locacaoOptional.isEmpty()){
+            applyErrorMessage(Status.FAIL,response,"Locacoes requisitadas não existem");
+            return response;
+        }
+
+        Locacao locacao = locacaoOptional.get();
+        addProdutosLocacao(locacao);
+
+        response.setLocacoes(Arrays.asList(locacao));
+        return response;
+    }
+
     private void addProdutosLocacao(Locacao locacao) {
         List<Item> itemsLocacao = getItemRepository().findByCodigoLocacao(locacao.getCodigo());
         itemsLocacao.stream()
@@ -142,34 +183,6 @@ public class LocacaoService implements ILocacaoService, Serializable {
             locacao.getProdutos().stream().filter(produto -> produto.getCodigo() == item.getCodigoProduto()).findFirst().get().setQuantidade(item.getQuantidade());
         }
     }
-
-
-/*
-    @Override
-    public LocacaoResponse buscarPessoaPorId(Locacao request) {
-        LocacaoResponse response = new LocacaoResponse();
-
-        if (request == null || request.getCodProduto() == null ){
-            applyErrorMessage(Status.VALIDATION_ERROR,response,"Certifique-se de que todos os campos para locacao estão presentes");
-            return response;
-        }
-        PessoaResponse pessoaResponse = buscarPessoaResponse(request);
-
-        if (pessoaResponse == null){
-            applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que a pessoa da locacao existe");
-            response.getMessages().addAll(pessoaResponse.getMessages());
-            return response;
-        }
-
-        List<Optional<Locacao>> locacaoOptionalList = getRepository().findByCodProduto(request.getCodProduto());
-        if (locacaoOptionalList == null || locacaoOptionalList.isEmpty()){
-            applyErrorMessage(Status.FAIL,response,"Locacoes requisitadas não existem");
-            return response;
-        }
-
-        response.setLocacoes(locacaoOptionalList.stream().map(p -> p.get()).collect(Collectors.toList()));
-        return response;
-    }*/
 
     @Override
     public LocacaoResponse apagarLocacao(Locacao request) {
@@ -218,8 +231,69 @@ public class LocacaoService implements ILocacaoService, Serializable {
         return response;
     }
 
+    @Override
+    public Page<Locacao> pesquisar(LocacaoFilter filtro, Pageable pageable) {
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaQuery<Locacao> criteriaQuery = builder.createQuery(Locacao.class);
+        Root<Locacao> f = criteriaQuery.from(Locacao.class);
+        TypedQuery<Locacao> typedQuery;
+        List<Predicate> predicateList = new ArrayList<>();
+        Predicate[] predicateArray;
+
+        if (filtro.getDataInicio() != null) {
+            predicateList.add(builder.equal(f.<String>get("dataInicio"), filtro.getDataInicio()));
+        }
+
+        Authentication user = SecurityContextHolder.getContext().getAuthentication();
+        PessoaResponse pessoa = getPessoaService().buscarPessoaPorUser(user.getName());
+        filtro.setUser(pessoa.getPessoas().get(0).getCodigo());
+
+
+        if (filtro.getUser() != null) {
+            predicateList.add(builder.equal(f.<Long>get("codPessoa"), filtro.getUser()));
+        }
+
+        if (filtro.getCodigo() != null) {
+            predicateList.add(builder.equal(f.<Long>get("codigo"), filtro.getCodigo()));
+        }
+
+        predicateArray = new Predicate[predicateList.size()];
+        predicateList.toArray(predicateArray);
+
+        PaginacaoUtil.prepararOrdem(f, criteriaQuery, builder, pageable);
+
+        criteriaQuery.select(f).where(predicateArray).distinct(true);
+        typedQuery = manager.createQuery(criteriaQuery);
+        typedQuery.setHint(QueryHints.PASS_DISTINCT_THROUGH, false);
+
+        PaginacaoUtil.prepararIntervalo(typedQuery, pageable);
+
+        List<Locacao> locacoes = typedQuery.getResultList();
+
+        long totalRegistros = PaginacaoUtil.getTotalRegistros(f, predicateArray, builder, manager);
+
+        Page<Locacao> pagina = new PageImpl<>(locacoes, pageable, totalRegistros);
+
+        return pagina;
+    }
+
     private void applyErrorMessage(Status status, LocacaoResponse response, String message) {
         response.setStatus(status);
         response.getMessages().add(message);
+    }
+
+    private PessoaResponse buscarPessoaResponse(Locacao request) {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setCodigo(request.getCodPessoa());
+        PessoaResponse pessoaResponse = getPessoaService().buscarPessoaPorId(pessoa);
+        return pessoaResponse;
+    }
+
+    private ProdutoResponse buscarProdutoResponse(Locacao request) {
+        Produto produto = new Produto();
+        request.getProdutos().stream().forEach(produto1 -> produto.setCodigo(produto1.getCodigo()));
+
+        ProdutoResponse produtoResponse = getProdutoService().buscarProdutoPorId(produto);
+        return produtoResponse;
     }
 }

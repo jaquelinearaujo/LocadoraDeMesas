@@ -6,23 +6,23 @@
 <body>
 	<div layout:fragment="conteudo" class="d-flex flex-grow-1" id="conteudo">
 		<div class="container">
-			<h1 class="mb-5 mt-5">Fabricantes</h1>
+			<h1 class="mb-5 mt-5">Locações</h1>
 
 			<table class="table table-striped table-hover table-responsive align-middle mb-5">
 				<thead>
 					<tr>
-						<th scope="col">codigo</th>
-						<div th:replace="~{fragments/paginacao :: coluna(${pagina}, 'nome', 'Nome')}"></div>
+						<th scope="col">Locação</th>
+						<div th:replace="~{fragments/paginacao :: coluna(${pagina}, 'dataInicio', 'Data de inicio')}"></div>
 						<th scope="col">Editar</th>
 						<th scope="col">Remover</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="fabricante : ${pagina.conteudo}" th:object="${fabricante}">
+					<tr th:each="locacao : ${pagina.conteudo}" th:object="${locacaoFilter}">
 						<th scope="row" th:text="*{codigo}">1</th>
-						<td th:text="*{nome}">Joao</td>
+						<td th:text="*{dataInicio}">Joao</td>
 						<td>
-							<form action="#" th:action="@{/fabricante/buscar}" method="post">
+							<form action="#" th:action="@{/api/locacao/buscar}" method="post">
 								<input type="hidden" name="codigo" th:value="*{codigo}">
 								<button type="submit" class="btn btn-warning btn-floating">
 									<i class="bi bi-pencil"></i>
@@ -30,17 +30,16 @@
 							</form>
 						</td>
 						<td>
-							<form action="#" th:action="@{/fabricante/remover}" method="post">
+							<form action="#" th:action="@{/api/locacao/remover}" method="post">
 								<input type="hidden" name="codigo" th:value="*{codigo}" id="codigo">
-								<input type="hidden" name="nome" th:value="*{nome}" id="nome">
-								<button type="button" class="btn btn-danger btn-floating botaoremover">
-									<i class="bi bi-trash"></i>
+								<button type="submit" class="btn btn-danger btn-floating">
+									<i class="fa-solid fa-trash"></i>
 								</button>
 							</form>
 						</td>
 					</tr>
 					<tr th:if="${pagina.vazia}">
-						<td colspan="4">Nenhum fabricante encontrado</td>
+						<td colspan="4">Nenhuma locacao encontrada</td>
 					</tr>
 				</tbody>
 			</table>
