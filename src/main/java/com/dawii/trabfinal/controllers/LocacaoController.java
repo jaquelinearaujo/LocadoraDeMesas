@@ -22,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -43,8 +42,7 @@ public class LocacaoController {
     @Autowired
     private ReportService relatorioService;
 
-
-    @GetMapping("/abririnserir")
+    @RequestMapping(value = "/abririnserir", method = RequestMethod.GET)
     public ModelAndView abrirInserir(LocacaoRequest request) {
         ModelAndView mv = new ModelAndView("/locacao/inserir");
         ProdutoResponse response = getProdutoService().buscarTodos();
@@ -54,19 +52,25 @@ public class LocacaoController {
         return mv;
     }
 
-    @PostMapping(value = { "/cadastrar" })
-    public ModelAndView inserirProduto(@Valid LocacaoRequest locacaoRequest, BindingResult result, Model model, RedirectAttributes atributos){
-        LocacaoResponse locacaoResponse = getService().insertLocacao(locacaoRequest);
-        ProdutoResponse response = getProdutoService().buscarTodos();
+    @RequestMapping(value = "/cadastrar", method = RequestMethod.POST)
+    public ModelAndView inserirProduto(@Valid LocacaoRequest locacaoRequest,
+                                       BindingResult result,
+                                       RedirectAttributes attributes){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("/index");
-
-        if (!locacaoResponse.getMessages().isEmpty()){
-            mv.addObject("mensagem", locacaoResponse.getMessages().get(0));
+        if(result.hasErrors()) {
+            mv = new ModelAndView("redirect:/api/locacao/abririnserir");
+            attributes.addFlashAttribute("errors", result.getFieldErrors());
             return mv;
+        }else {
+            LocacaoResponse locacaoResponse = getService().insertLocacao(locacaoRequest);
+            if (!locacaoResponse.getMessages().isEmpty()){
+                mv = new ModelAndView("redirect:/api/locacao/abririnserir");
+                attributes.addFlashAttribute("mensagem", locacaoResponse.getMessages().get(0));
+                return mv;
+            }
+            mv = new ModelAndView("redirect:/api/locacao/abririnserir");
+            attributes.addFlashAttribute("mensagem", locacaoResponse.getMessages().get(0));
         }
-
-        mv.addObject("produtos", response.getProdutos());
         return mv;
     }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,9 @@ public class Locacao implements Serializable {
     @Column(name = "val_total")
     private Float valTotal;
     @Column(name = "data_inicio")
+    @NotEmpty(message = "Data inicial é requerida")
     private String dataInicio;
+    @NotEmpty(message = "Data final é requerida")
     @Column(name = "data_fim")
     private String dataFim;
 }

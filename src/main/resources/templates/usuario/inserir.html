@@ -3,7 +3,12 @@
 	  xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.thymeleaf.org">
 <head>
-	<title>Resultado da Pesquisa</title>
+	<title>Inserir</title>
+	<script type="text/javascript">
+        setTimeout(function() {
+            $(".alert").fadeOut().empty();
+        }, 5000);
+	</script>
 </head>
 <body>
 <div layout:include="Mensagem"></div>
@@ -11,28 +16,33 @@
 	<fieldset style="border: 3px solid black; padding: 10px">
 		<legend style="width: auto">Novo Usuário:</legend>
 		<form action="#" th:action="@{/api/usuario/cadastrar}" th:object="${usuario}" method="post" class="col-10 needs-validation" th:fragment="formulario">
+			<div class="alert alert-light" th:text="${mensagem}"
+				 th:if="${not #strings.isEmpty(mensagem)}"></div>
+
+			<div class="alert alert-danger" th:if="${errors}">
+				<p>Alguns erros foram encontrados, por favor verifique:</p>
+				<div th:each="detailedError : ${errors}">
+					<span th:text="${detailedError.defaultMessage}"></span>
+				</div>
+			</div>
 			<div class="row mb-3 has-validation">
 				<label for="nome" class="form-label">Nome:</label>
-				<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" id="nome">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:each="erro : ${#fields.errors('nome')}" th:text="${erro} + '. '">Erro no nome</span>
+				<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" id="nome" >
 			</div>
 			<div class="row mb-3 has-validation">
 				<label for="email" class="form-label">Email:</label>
-				<input type="text" class="form-control" th:field="*{email}" th:errorclass="is-invalid" id="email">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:each="erro : ${#fields.errors('email')}" th:text="${erro} + '. '">Erro no email</span>
+				<input type="email" class="form-control" th:field="*{email}" th:errorclass="is-invalid" id="email" >
 			</div>
 			<div class="row mb-3 has-validation">
 				<label for="senha" class="form-label">Senha:</label>
-				<input type="password" class="form-control" th:field="*{senha}" th:errorclass="is-invalid" id="senha">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('senha')}" th:each="erro : ${#fields.errors('senha')}" th:text="${erro} + '. '">Erro no preço unitário</span>
+				<input type="password" class="form-control" th:field="*{senha}" th:errorclass="is-invalid" id="senha" >
 			</div>
 			<div class="row mb-3 has-validation">
 				<label for="usuario" class="form-label">Usuário para login:</label>
-				<input type="text" class="form-control" th:field="*{usuario}" th:errorclass="is-invalid" id="usuario">
-				<span class="invalid-feedback" th:if="${#fields.hasErrors('usuario')}" th:each="erro : ${#fields.errors('usuario')}" th:text="${erro} + '. '">Erro no usuario</span>
+				<input type="text" class="form-control" th:field="*{usuario}" th:errorclass="is-invalid" id="usuario" >
 			</div>
 			<div class="row mb-3 has-validation" th:each="papel: ${todosPapeis}">
-				<input type="checkbox" class="form-control" th:field="*{papeis}" th:value="${papel.codigo}" th:errorclass="is-invalid">
+				<input type="checkbox" class="form-control" th:field="*{papeis}" th:value="${papel.codigo}" th:errorclass="is-invalid" >
 				<label th:for="${#ids.prev('papeis')}" class="form-label" th:text="${papel.nome}">Role:</label>
 			</div>
 			<button type="submit" class="btn btn-primary mt-2">Save</button>

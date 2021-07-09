@@ -28,7 +28,6 @@ public class Produto implements Serializable {
     private Integer estoque;
     @Column(name = "estoque_atual")
     private Integer estoqueAtual;
-
     @Transient
     private Integer quantidade;
 

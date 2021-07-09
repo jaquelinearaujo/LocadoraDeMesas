@@ -47,9 +47,15 @@ public class ProdutoService implements IProdutoService {
             applyErrorMessage(Status.VALIDATION_ERROR, response, "Certifique-se de que todos os campos para produto estão presentes");
             return response;
         }else{
-            request.setEstoqueAtual(request.getEstoque());
-            getRepository().save(request);
-            response.setProdutos(Arrays.asList(request));
+            try {
+                request.setEstoqueAtual(request.getEstoque());
+                getRepository().save(request);
+                response.getMessages().add("Produto cadastrado com sucesso");
+                response.setProdutos(Arrays.asList(request));
+            }catch (Exception e) {
+                applyErrorMessage(Status.VALIDATION_ERROR,response,"Produto nao cadastrado");
+            }
+
         }
         return response;
     }
@@ -98,13 +104,13 @@ public class ProdutoService implements IProdutoService {
 
         response = buscarProdutoPorId(request);
         if (!response.getStatus().equals(Status.SUCCESS)){
-            applyErrorMessage(Status.VALIDATION_ERROR,response,"Produto requisitada para ser removida não existe");
+            applyErrorMessage(Status.VALIDATION_ERROR,response,"Produto requisitada para ser removido não existe");
             return response;
         }
 
         getRepository().deleteById(request.getCodigo());
         response.setProdutos(Arrays.asList(response.getProdutos().get(0)));
-        applyErrorMessage(Status.SUCCESS,response,"Produto removida");
+        applyErrorMessage(Status.SUCCESS,response,"Produto removido");
 
         return response;
     }

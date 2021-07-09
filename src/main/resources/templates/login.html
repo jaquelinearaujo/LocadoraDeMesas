@@ -6,37 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Spring MVC com Spring Boot</title>
-    <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="../static/images/icons/favicon.ico" th:href="@{/images/icons/favicon.ico}"/>
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/bootstrap/css/bootstrap.min.css" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/fonts/iconic/css/material-design-iconic-font.min.css" th:href="@{/fonts/iconic/css/material-design-iconic-font.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/animate/animate.css" th:href="@{/vendor/animate/animate.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/css-hamburgers/hamburgers.min.css" th:href="@{/vendor/css-hamburgers/hamburgers.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/animsition/css/animsition.min.css" th:href="@{/vendor/animsition/css/animsition.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/select2/select2.min.css" th:href="@{/vendor/select2/select2.min.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/vendor/daterangepicker/daterangepicker.css" th:href="@{/vendor/daterangepicker/daterangepicker.css}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="../static/css/util.css" th:href="@{/css/util.css}">
-    <link rel="stylesheet" type="text/css" href="../static/css/main.css" th:href="@{/css/main.css}">
 </head>
 <body>
-<div class="limiter" layout:fragment="conteudo">
+<div class="limiter" layout:fragment="conteudo" style="background:url(images/bg-01.jpg);">
     <div class="container-login100">
         <div class="wrap-login100">
             <p th:if="${param.error}" style="color:white; text-align:center; justify-content:center;">Usuário ou senha inválidos</p>
             <p th:if="${param.logout}" style="color:white; text-align:center; justify-content:center;">Você foi deslogado</p>
             <form class="login100-form validate-form" method="post" th:action="@{/login}">
 					<span class="login100-form-logo">
-						<img th:src="@{/images/logo.png}" alt="" style="width: 128px">
+						<img th:src="@{/images/login.png}" alt="" style="width: 128px">
 					</span>
 
                 <span class="login100-form-title p-b-34 p-t-27">Log in</span>

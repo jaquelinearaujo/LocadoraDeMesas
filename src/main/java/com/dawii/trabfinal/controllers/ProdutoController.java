@@ -10,10 +10,10 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,26 +25,32 @@ import javax.validation.Valid;
 public class ProdutoController {
     private final IProdutoService service;
 
-    @GetMapping("/abririnserir")
+    @RequestMapping(value = "/abririnserir", method = RequestMethod.GET)
     public ModelAndView abrirInserir() {
         ModelAndView mv = new ModelAndView("/produto/inserir");
         mv.addObject("produto", new Produto());
         return mv;
     }
 
-    @PostMapping(value = { "/cadastrar" })
-    public ModelAndView inserirProduto(@Valid Produto request, BindingResult result, Model model){
-        ProdutoResponse produtoResponse = getService().insertProduto(request);
+    @RequestMapping(value = "/cadastrar", method = RequestMethod.POST)
+    public ModelAndView inserirProduto(@Valid Produto request,
+                                       BindingResult result,
+                                       RedirectAttributes attributes){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("/index");
-        if (!produtoResponse.getMessages().isEmpty()){
-            mv.addObject("mensagem", produtoResponse.getMessages().get(0));
+        if(result.hasErrors()) {
+            mv = new ModelAndView("redirect:/api/produto/abririnserir");
+            attributes.addFlashAttribute("errors", result.getFieldErrors());
             return mv;
+        }else {
+            ProdutoResponse produtoResponse = getService().insertProduto(request);
+            if (!produtoResponse.getMessages().isEmpty()){
+                mv = new ModelAndView("redirect:/api/produto/abririnserir");
+                attributes.addFlashAttribute("mensagem", produtoResponse.getMessages().get(0));
+                return mv;
+            }
+            mv = new ModelAndView("redirect:/api/produto/abririnserir");
+            attributes.addFlashAttribute("mensagem", produtoResponse.getMessages().get(0));
         }
-
-        produtoResponse = getService().buscarTodos();
-        mv.addObject("mensagem", "Produto cadastrado com sucesso");
-        mv.addObject("produtos", produtoResponse.getProdutos());
         return mv;
     }
 
@@ -94,9 +100,7 @@ public class ProdutoController {
             mv.addObject("mensagem", response.getMessages().get(0));
             return mv;
         }
-        response = getService().buscarTodos();
         mv.addObject("mensagem", "Produto removido com sucesso");
-        mv.addObject("produtos", response.getProdutos());
         return mv;
     }
     @PostMapping("/alterar")

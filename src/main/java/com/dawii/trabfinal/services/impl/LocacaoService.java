@@ -98,7 +98,7 @@ public class LocacaoService implements ILocacaoService, Serializable {
                 final Long codLocacao = locacao.getCodigo();
                 items.stream().forEach(item -> item.setCodigoLocacao(codLocacao));
                 items.stream().forEach(item -> getItemRepository().save(item));
-
+                response.getMessages().add("Locacao cadastrada com sucesso");
                 response.setLocacoes(Arrays.asList(locacao));
             }catch (Exception e){
                 applyErrorMessage(Status.VALIDATION_ERROR,response,"Locacao nao cadastrada");

@@ -4,6 +4,11 @@
 	  xmlns:layout="http://www.thymeleaf.org">
 <head>
 	<title>Resultado da Pesquisa</title>
+	<script type="text/javascript">
+        setTimeout(function() {
+            $(".alert").fadeOut().empty();
+        }, 5000);
+	</script>
 </head>
 <body>
 <div layout:include="Mensagem"></div>
@@ -11,6 +16,15 @@
 	<fieldset style="border: 3px solid black; padding: 10px">
 		<legend style="width: auto">Novo Produto:</legend>
 		<form action="#" th:action="@{/api/produto/cadastrar}" th:object="${produto}" method="post" class="col-10 needs-validation" th:fragment="formulario">
+			<div class="alert alert-light" th:text="${mensagem}"
+				 th:if="${not #strings.isEmpty(mensagem)}"></div>
+
+			<div class="alert alert-danger" th:if="${errors}">
+				<p>Alguns erros foram encontrados, por favor verifique:</p>
+				<div th:each="detailedError : ${errors}">
+					<span th:text="${detailedError.defaultMessage}"></span>
+				</div>
+			</div>
 			<div class="row mb-3 has-validation">
 				<label for="nome" class="form-label">Nome:</label>
 				<input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid" id="nome">
