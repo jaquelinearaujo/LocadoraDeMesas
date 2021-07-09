@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LocacaoReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8491fead-55fc-474d-9435-98b7b8952c87">
+	<property name="com.jaspersoft.studio.data.sql.tables" value="bG9jYWNhbyBBUyAsMjgsNzEsNjkxYmQ1NjgtZWE5MS00ZmMxLTg5N2YtNWY4YTZhNDZiZWExOw=="/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Banco Trab Final"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT codigo,
+	cod_pessoa,
+	data_inicio,
+	data_fim,
+	val_total
+FROM locacao]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="codigo"/>
+		<property name="com.jaspersoft.studio.field.label" value="codigo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="locacao"/>
+	</field>
+	<field name="cod_pessoa" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="cod_pessoa"/>
+		<property name="com.jaspersoft.studio.field.label" value="cod_pessoa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="locacao"/>
+	</field>
+	<field name="data_inicio" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="data_inicio"/>
+		<property name="com.jaspersoft.studio.field.label" value="data_inicio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="locacao"/>
+	</field>
+	<field name="data_fim" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="data_fim"/>
+		<property name="com.jaspersoft.studio.field.label" value="data_fim"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="locacao"/>
+	</field>
+	<field name="val_total" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="val_total"/>
+		<property name="com.jaspersoft.studio.field.label" value="val_total"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="locacao"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="227" y="0" width="100" height="30" uuid="c44fb056-e3ed-4f79-8a00-bc1b5c02428d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22"/>
+				</textElement>
+				<text><![CDATA[Locações]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="168" splitType="Stretch">
+			<textField>
+				<reportElement x="100" y="0" width="100" height="30" uuid="103906c0-3c4a-4c8e-b08e-890651a562f2"/>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="30" uuid="fc58d9e7-a512-4a2c-950e-28bd5c3e881d"/>
+				<text><![CDATA[codigo]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="30" width="100" height="30" uuid="fab07432-1ef6-4386-92c0-c366f5aa01e4"/>
+				<textFieldExpression><![CDATA[$F{cod_pessoa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="30" width="100" height="30" uuid="4d8f432a-d498-49e1-bbc0-680d7369e98c"/>
+				<text><![CDATA[cod_pessoa]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="60" width="100" height="30" uuid="4349d19e-c695-4341-b15a-a8c4d9ed9342"/>
+				<textFieldExpression><![CDATA[$F{data_inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="60" width="100" height="30" uuid="658dd593-ea18-4e51-aa71-6f7c46fa206c"/>
+				<text><![CDATA[data_inicio]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="80" width="100" height="30" uuid="fbf97446-48a1-4a33-83fc-bdd4d87902fc"/>
+				<textFieldExpression><![CDATA[$F{data_fim}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="80" width="100" height="30" uuid="19b4a0fc-fb87-4366-85f8-f0d53ba4748e"/>
+				<text><![CDATA[data_fim]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="110" width="100" height="30" uuid="a2f918d7-bb81-4bb2-8c0c-f41fa6541dae"/>
+				<textFieldExpression><![CDATA[$F{val_total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="110" width="100" height="30" uuid="c2f64bbb-538c-4b2b-a3a9-6906df17507a"/>
+				<text><![CDATA[val_total]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="164" width="555" height="1" uuid="8177d5f8-d74f-4079-ba84-5c3f39b819fd"/>
+			</line>
+			<subreport>
+				<reportElement x="0" y="140" width="555" height="19" uuid="1226d409-33bf-4e0f-8493-2c0dbe48ad3b"/>
+				<subreportParameter name="CODIGOLOCACAO">
+					<subreportParameterExpression><![CDATA[$F{codigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["src/main/resources/reports/subProdutosReport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="350" y="0" width="100" height="30" uuid="1ca94168-4a89-4183-ae69-83728e70d709"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="450" y="0" width="100" height="30" uuid="3d96364b-1499-480d-8054-e7656a4e0183"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="0" width="100" height="30" uuid="7b61a8b2-9acc-459f-984b-5728061f8c5b"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
