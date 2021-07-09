@@ -34,13 +34,17 @@ public class ProdutoController {
 
     @PostMapping(value = { "/cadastrar" })
     public ModelAndView inserirProduto(@Valid Produto request, BindingResult result, Model model){
-        getService().insertProduto(request);
-
-        ProdutoResponse response = getService().buscarTodos();
+        ProdutoResponse produtoResponse = getService().insertProduto(request);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/index");
+        if (!produtoResponse.getMessages().isEmpty()){
+            mv.addObject("mensagem", produtoResponse.getMessages().get(0));
+            return mv;
+        }
+
+        produtoResponse = getService().buscarTodos();
         mv.addObject("mensagem", "Produto cadastrado com sucesso");
-        mv.addObject("produtos", response.getProdutos());
+        mv.addObject("produtos", produtoResponse.getProdutos());
         return mv;
     }
 
@@ -64,6 +68,11 @@ public class ProdutoController {
         ModelAndView mv = new ModelAndView();
         if (request != null) {
             ProdutoResponse response = getService().buscarProdutoPorId(request);
+            if (!response.getMessages().isEmpty()){
+                mv.setViewName("/index");
+                mv.addObject("mensagem", response.getMessages().get(0));
+                return mv;
+            }
             mv.setViewName("produto/mostrar");
             response.getProdutos().stream().forEach(produto ->  mv.addObject("produto", produto));
         } else {
@@ -76,11 +85,16 @@ public class ProdutoController {
     @PostMapping("/remover")
     @DeleteMapping
     public ModelAndView deletarProdutoPorId(Produto request){
-        getService().apagarProduto(request);
+        ProdutoResponse response = getService().apagarProduto(request);
 
-        ProdutoResponse response = getService().buscarTodos();
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/index");
+
+        if (!response.getMessages().isEmpty()){
+            mv.addObject("mensagem", response.getMessages().get(0));
+            return mv;
+        }
+        response = getService().buscarTodos();
         mv.addObject("mensagem", "Produto removido com sucesso");
         mv.addObject("produtos", response.getProdutos());
         return mv;
@@ -93,6 +107,10 @@ public class ProdutoController {
         ProdutoResponse response = getService().buscarTodos();
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/index");
+        if (!response.getMessages().isEmpty()){
+            mv.addObject("mensagem", response.getMessages().get(0));
+            return mv;
+        }
         mv.addObject("mensagem", "Produto alterado com sucesso");
         mv.addObject("produtos", response.getProdutos());
         return mv;

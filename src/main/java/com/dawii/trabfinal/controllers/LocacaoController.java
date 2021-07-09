@@ -52,15 +52,13 @@ public class LocacaoController {
         LocacaoResponse locacaoResponse = getService().insertLocacao(locacaoRequest);
         ProdutoResponse response = getProdutoService().buscarTodos();
         ModelAndView mv = new ModelAndView();
+        mv.setViewName("/index");
 
         if (!locacaoResponse.getMessages().isEmpty()){
-            mv.setViewName("/index");
             mv.addObject("mensagem", locacaoResponse.getMessages().get(0));
-            mv.addObject("produtos", response.getProdutos());
             return mv;
         }
 
-        mv.setViewName("/index");
         mv.addObject("produtos", response.getProdutos());
         return mv;
     }
@@ -97,13 +95,17 @@ public class LocacaoController {
     @PostMapping("/remover")
     @DeleteMapping
     public ModelAndView deletarLocacaoPorId(Locacao request){
-        getService().apagarLocacao(request);
-
-        LocacaoResponse response = getService().buscarTodos();
+        LocacaoResponse locacaoResponse = getService().apagarLocacao(request);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/index");
+        if (!locacaoResponse.getMessages().isEmpty()){
+            mv.addObject("mensagem", locacaoResponse.getMessages().get(0));
+            return mv;
+        }
+
+        locacaoResponse = getService().buscarTodos();
         mv.addObject("mensagem", "Locacao removida com sucesso");
-        mv.addObject("locacoes", response.getLocacoes());
+        mv.addObject("locacoes", locacaoResponse.getLocacoes());
         return mv;
     }
 
