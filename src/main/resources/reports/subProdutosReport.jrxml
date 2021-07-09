@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subProdutosReport" pageWidth="538" pageHeight="842" columnWidth="538" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fe8c18aa-7221-4817-9692-d1c885aaa8dc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subProdutosReport" pageWidth="538" pageHeight="842" columnWidth="538" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="28" uuid="fe8c18aa-7221-4817-9692-d1c885aaa8dc">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Banco Trab Final"/>
-	<property name="com.jaspersoft.studio.unit." value="cm"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="cm"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="cm"/>
 	<parameter name="CODIGOLOCACAO" class="java.lang.Long"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT item.cod_locacao,
@@ -27,7 +18,7 @@
 FROM item
 	INNER JOIN produto ON 
 	 item.cod_produto = produto.codigo
-	 where cod_locacao =  $P{CODIGOLOCACAO} ]]>
+	 where cod_locacao =  $P{CODIGOLOCACAO}]]>
 	</queryString>
 	<field name="cod_locacao" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="cod_locacao"/>
@@ -96,7 +87,7 @@ FROM item
 	<detail>
 		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="538" height="13" uuid="62224ec4-ceea-40d4-bbc1-09df7af2827f"/>
+				<reportElement x="0" y="0" width="555" height="13" uuid="62224ec4-ceea-40d4-bbc1-09df7af2827f"/>
 				<textFieldExpression><![CDATA["Produto: " +$F{nome}+ " Preço:  " +$F{preco}+ " Quantidade: " +$F{quantidade}]]></textFieldExpression>
 			</textField>
 		</band>

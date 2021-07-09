@@ -14,8 +14,18 @@
 	<name>trabfinal</name>
 	<description>Trabalho Final de DAWII</description>
 	<properties>
+		<!-- Versao do Java -->
 		<java.version>14</java.version>
+		<!-- Versao do Disruptor -->
+		<disruptor.version>3.4.2</disruptor.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${project.basedir}/local-maven-repo</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -10,11 +10,15 @@ import com.dawii.trabfinal.pagination.PageWrapper;
 import com.dawii.trabfinal.services.ILocacaoService;
 import com.dawii.trabfinal.services.IPessoaService;
 import com.dawii.trabfinal.services.IProdutoService;
+import com.dawii.trabfinal.services.impl.ReportService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +39,9 @@ public class LocacaoController {
     private final ILocacaoService service;
     private final IProdutoService produtoService;
     private final IPessoaService pessoaService;
+
+    @Autowired
+    private ReportService relatorioService;
 
 
     @GetMapping("/abririnserir")
@@ -123,12 +130,11 @@ public class LocacaoController {
 
     @GetMapping("/relatorio")
     public ResponseEntity<byte[]> gerarRelatorioSimplesTodasPessoas() {
-//        byte[] relatorio = relatorioService.gerarRelatorioSimplesTodasPessoas();
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=PessoasSimples.pdf")
-//                .body(relatorio);
-        return null;
+        byte[] relatorio = relatorioService.gerarRelatorioComplexoTodasLocacoes();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Locacoes.pdf")
+                .body(relatorio);
     }
 }

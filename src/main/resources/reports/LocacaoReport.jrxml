@@ -51,52 +51,80 @@ FROM locacao]]>
 		</band>
 	</title>
 	<detail>
-		<band height="168" splitType="Stretch">
+		<band height="119" splitType="Stretch">
+			<rectangle>
+				<reportElement stretchType="ElementGroupBottom" x="0" y="0" width="555" height="119" backcolor="#E8E6E6" uuid="67b04e78-a39e-4ec2-b29a-8675c6d2f956">
+					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2 == 0)]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
 			<textField>
-				<reportElement x="100" y="0" width="100" height="30" uuid="103906c0-3c4a-4c8e-b08e-890651a562f2"/>
+				<reportElement x="40" y="0" width="100" height="14" uuid="103906c0-3c4a-4c8e-b08e-890651a562f2">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="30" uuid="fc58d9e7-a512-4a2c-950e-28bd5c3e881d"/>
-				<text><![CDATA[codigo]]></text>
+				<reportElement x="0" y="0" width="40" height="14" uuid="fc58d9e7-a512-4a2c-950e-28bd5c3e881d">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Locação:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="30" width="100" height="30" uuid="fab07432-1ef6-4386-92c0-c366f5aa01e4"/>
+				<reportElement x="40" y="20" width="100" height="14" uuid="fab07432-1ef6-4386-92c0-c366f5aa01e4"/>
 				<textFieldExpression><![CDATA[$F{cod_pessoa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="30" width="100" height="30" uuid="4d8f432a-d498-49e1-bbc0-680d7369e98c"/>
-				<text><![CDATA[cod_pessoa]]></text>
+				<reportElement x="0" y="20" width="40" height="14" uuid="4d8f432a-d498-49e1-bbc0-680d7369e98c">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Pessoa:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="60" width="100" height="30" uuid="4349d19e-c695-4341-b15a-a8c4d9ed9342"/>
+				<reportElement x="40" y="40" width="100" height="14" uuid="4349d19e-c695-4341-b15a-a8c4d9ed9342">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{data_inicio}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="60" width="100" height="30" uuid="658dd593-ea18-4e51-aa71-6f7c46fa206c"/>
-				<text><![CDATA[data_inicio]]></text>
+				<reportElement x="0" y="40" width="40" height="14" uuid="658dd593-ea18-4e51-aa71-6f7c46fa206c">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Inicío:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="80" width="100" height="30" uuid="fbf97446-48a1-4a33-83fc-bdd4d87902fc"/>
+				<reportElement x="40" y="60" width="100" height="14" uuid="fbf97446-48a1-4a33-83fc-bdd4d87902fc">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{data_fim}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="80" width="100" height="30" uuid="19b4a0fc-fb87-4366-85f8-f0d53ba4748e"/>
-				<text><![CDATA[data_fim]]></text>
+				<reportElement x="0" y="60" width="40" height="14" uuid="19b4a0fc-fb87-4366-85f8-f0d53ba4748e">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Fim:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="100" y="110" width="100" height="30" uuid="a2f918d7-bb81-4bb2-8c0c-f41fa6541dae"/>
+			<textField pattern="¤#,##0.##;¤-#,##0.##">
+				<reportElement x="40" y="80" width="100" height="14" uuid="a2f918d7-bb81-4bb2-8c0c-f41fa6541dae">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{val_total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="110" width="100" height="30" uuid="c2f64bbb-538c-4b2b-a3a9-6906df17507a"/>
-				<text><![CDATA[val_total]]></text>
+				<reportElement x="0" y="80" width="40" height="14" uuid="c2f64bbb-538c-4b2b-a3a9-6906df17507a">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="164" width="555" height="1" uuid="8177d5f8-d74f-4079-ba84-5c3f39b819fd"/>
-			</line>
 			<subreport>
-				<reportElement x="0" y="140" width="555" height="19" uuid="1226d409-33bf-4e0f-8493-2c0dbe48ad3b"/>
+				<reportElement x="0" y="100" width="555" height="19" uuid="1226d409-33bf-4e0f-8493-2c0dbe48ad3b"/>
 				<subreportParameter name="CODIGOLOCACAO">
 					<subreportParameterExpression><![CDATA[$F{codigo}]]></subreportParameterExpression>
 				</subreportParameter>
